@@ -1,6 +1,9 @@
 {
   "name": "@ovnigames/js-dev-tools",
   "version": "0.0.1",
+  "description": "Development tools for front-size components for the OVNIGames framework",
+  "author": "kylekatarnls",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --proxy-config=proxy.conf.json",
