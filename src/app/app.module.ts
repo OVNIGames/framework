@@ -9,6 +9,8 @@ import { MatCheckboxModule, MatInputModule, MatProgressSpinnerModule } from '@an
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoginModule } from './login/login.module';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatCheckboxModule,
     MatInputModule,
     MatProgressSpinnerModule,
+
+    LoginModule,
   ],
   providers: [
     SocketService,

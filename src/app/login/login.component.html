@@ -1,0 +1,14 @@
+
+<mat-spinner *ngIf="loading"></mat-spinner>
+<div *ngIf="!loading">
+  <mat-form-field>
+    <mat-label>E-mail</mat-label>
+    <input matInput [(ngModel)]="email">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input matInput [(ngModel)]="password">
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="remember">Remember me</mat-checkbox>
+  <button mat-button (click)="login()">Login</button>
+</div>

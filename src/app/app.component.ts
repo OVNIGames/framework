@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { Subscription } from 'apollo-client/util/Observable';
 import { SocketService } from './socket.service';
 import { ApolloQueryResult } from 'apollo-client/core/types';
-import { UsersQueryInterface } from './user.interface';
+import { UsersQueryInterface } from './user/user.interface';
 
 @Component({
   selector: 'app-root',

@@ -6,7 +6,9 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { environment } from '../environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SocketService {
 
   private readonly messages: Subject<MessageEvent>;
@@ -33,9 +35,9 @@ export class SocketService {
       this.socket.close();
     };
 
-    const observable = new Observable(observer => {
+    const observable = new Observable(messenger => {
       this.socket.on('message', data => {
-        observer.next(data);
+        messenger.next(data);
       });
 
       return () => {
