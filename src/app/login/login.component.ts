@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LoginResult, LoginService } from './login.service';
 import { User } from '../user/user';
 import { ApolloQueryResult } from 'apollo-client';
@@ -6,8 +6,10 @@ import { FormControl, Validators } from '@angular/forms';
 import { OauthInterface, OauthQueryInterface } from './oauth.interface';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { UserInterface } from '../user/user.interface';
 
-const baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '') + (location.href.indexOf('?') === -1 ? '?' : '&');
+let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
+baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 
 @Component({
   selector: 'og-login',
@@ -17,6 +19,7 @@ const baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&
 export class LoginComponent implements OnInit {
   @Input() allowRemember = true;
   @Input() allowOAuth = true;
+  @Output() onUserLoggedIn: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
   readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
   readonly oauthErrorUrl = baseUrl + 'oauthError';
   loading = true;
@@ -24,12 +27,16 @@ export class LoginComponent implements OnInit {
   remember = false;
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
+  oauth = new FormControl('');
   oauthServices: OauthInterface[];
 
   constructor(private loginService: LoginService, private http: HttpClient, private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
+    if (location.href.indexOf('oauthError') !== -1) {
+      this.oauth.setErrors({oauthError: true});
+    }
     this.loading = false;
     if (!this.allowOAuth) {
       this.oAuthLoading = false;
@@ -60,23 +67,20 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.loginService.login(this.email.value, this.password.value, this.remember).subscribe((result: ApolloQueryResult<LoginResult>) => {
       this.loading = false;
-      console.log(result, result.data, result.data.login);
       if (result.data.login) {
         this.auth(result.data.login);
 
         return;
       }
 
-      console.log(this.email);
       this.email.setErrors({
         badLogin: true,
       });
-      console.log(this.email.errors);
     });
   }
 
-  auth(user: User) {
-
+  auth(user: UserInterface) {
+    this.onUserLoggedIn.emit(user);
   }
 
   getEmailErrorMessage() {

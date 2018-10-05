@@ -50,12 +50,13 @@ export class ApiService {
     if (typeof returnedFields === 'object') {
       returnedFields = returnedFields.join(',');
     }
+    returnedFields = returnedFields ? `{${returnedFields}}` : '';
 
     return this.apollo
       .mutate<T>({
         mutation: gql`
           mutation {
-            ${name}${parametersString} {${returnedFields || 'id'}}
+            ${name}${parametersString} ${returnedFields}
           }
         `,
       });

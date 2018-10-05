@@ -78,3 +78,7 @@ mat-checkbox {
   width: 24px;
   height: 24px;
 }
+
+.connexion-error {
+  margin-top: 10px;
+}

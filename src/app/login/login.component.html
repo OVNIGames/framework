@@ -3,26 +3,28 @@
     <mat-spinner></mat-spinner>
   </div>
   <div [style.display]="loading ? 'none' : ''">
-    <div>
-      <mat-form-field>
-        <mat-label>E-mail</mat-label>
-        <input matInput [formControl]="email" required>
-        <mat-error *ngIf="email.invalid">{{ getEmailErrorMessage() }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input matInput [formControl]="password" required>
-        <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div *ngIf="allowRemember">
-      <mat-checkbox [(ngModel)]="remember">Remember me</mat-checkbox>
-    </div>
-    <div>
-      <button mat-flat-button color="primary" (click)="login()">Login</button>
-    </div>
+    <form (submit)="login()">
+      <div>
+        <mat-form-field>
+          <mat-label>E-mail</mat-label>
+          <input matInput [formControl]="email" required>
+          <mat-error *ngIf="email.invalid">{{ getEmailErrorMessage() }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input type="password" matInput [formControl]="password" required>
+          <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="allowRemember">
+        <mat-checkbox [(ngModel)]="remember" [ngModelOptions]="{standalone: true}">Remember me</mat-checkbox>
+      </div>
+      <div>
+        <button type="submit" mat-flat-button color="primary">Login</button>
+      </div>
+    </form>
     <div *ngIf="allowOAuth">
       <div class="spinner-space" *ngIf="oAuthLoading">
         <mat-spinner></mat-spinner>
@@ -39,6 +41,9 @@
             <span class="svg" [innerHTML]="service.svg"></span>
           </a>
         </div>
+        <mat-error class="connexion-error" *ngIf="oauth.invalid">
+          Connexion failed or aborted.
+        </mat-error>
       </div>
     </div>
   </div>

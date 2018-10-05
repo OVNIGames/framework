@@ -1,3 +1,5 @@
 <mat-card>
-  {{ user.name }}
+  <div class="name">{{ user.name }}</div>
+  <button mat-flat-button (click)="logout()" *ngIf="!loading">Logout</button>
+  <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>
 </mat-card>
