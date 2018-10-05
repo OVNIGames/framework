@@ -22,4 +22,8 @@ export class LoginService {
       remember
     }, 'id,name,email');
   }
+
+  getOauthService() {
+    return this.api.query('oauth', null, 'code,name,login,callback,redirect,color,icon');
+  }
 }

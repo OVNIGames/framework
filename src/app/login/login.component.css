@@ -1,0 +1,80 @@
+mat-form-field,
+button,
+mat-checkbox,
+mat-card {
+  width: 100%;
+  max-width: 320px;
+  margin: 20px 0;
+}
+
+mat-form-field {
+  margin: 0 0 10px;
+}
+
+button,
+mat-card {
+  display: block;
+  margin: auto;
+}
+
+mat-card {
+  margin: 20px auto;
+}
+
+mat-checkbox {
+  display: block;
+  margin: 5px 0 20px;
+}
+
+.spinner-space {
+  padding: 40px 0;
+}
+
+.spinner-space mat-spinner {
+  margin: 0 auto;
+}
+
+.or-separator {
+  display: flex;
+  height: 48px;
+  align-items: center;
+}
+
+.or-separator hr {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.or-separator .text {
+  flex: 0;
+  text-align: center;
+  padding: 0 5px;
+  color: gray;
+}
+
+.oauth-bar {
+  display: flex;
+  align-content: space-between;
+}
+
+.oauth-bar a {
+  min-width: 0;
+  padding: 10px;
+  margin: auto;
+}
+
+.oauth-bar a:first-child {
+  margin-left: 0;
+}
+
+.oauth-bar a:last-child {
+  margin-right: 0;
+}
+
+.oauth-bar .svg {
+  fill: white;
+  display: block;
+  width: 24px;
+  height: 24px;
+}

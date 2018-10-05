@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from './login/login.module';
-import { LoginComponent } from './login/login.component';
+import { UserModule } from './user/user.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +28,7 @@ import { LoginComponent } from './login/login.component';
     MatInputModule,
     MatProgressSpinnerModule,
 
+    UserModule,
     LoginModule,
   ],
   providers: [

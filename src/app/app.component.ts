@@ -4,15 +4,16 @@ import gql from 'graphql-tag';
 import { Subscription } from 'apollo-client/util/Observable';
 import { SocketService } from './socket.service';
 import { ApolloQueryResult } from 'apollo-client/core/types';
-import { UsersQueryInterface } from './user/user.interface';
+import { UserInterface, UsersQueryInterface } from './user/user.interface';
 
 @Component({
-  selector: 'app-root',
+  selector: 'og-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   loading = true;
+  user: UserInterface;
   commonTextWatched = false;
   commonText = '';
 
@@ -43,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .watchQuery({
         query: gql`
           {
-            users {
+            users(current: true) {
               data {
                 name
                 games {
@@ -57,6 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .valueChanges
       .subscribe((result: ApolloQueryResult<UsersQueryInterface>) => {
         this.loading = result.loading;
+        this.user = result.data.users.data[0];
       });
   }
 

@@ -1,0 +1,7 @@
+.spinner-space {
+  padding: 40px 0;
+}
+
+.spinner-space mat-spinner {
+  margin: 0 auto;
+}

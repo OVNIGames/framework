@@ -21,19 +21,22 @@ export class ApiService {
     return this.socket.sendMessage(message);
   }
 
-  query<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<ApolloQueryResult<T>> {
+  query<T>(name: string, parameters?: object, returnedDataFields?: string | string[], returnedExtraFields?: string | string[]): Observable<ApolloQueryResult<T>> {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';
-    if (typeof returnedFields === 'object') {
-      returnedFields = returnedFields.join(',');
+    if (typeof returnedDataFields === 'object') {
+      returnedDataFields = returnedDataFields.join(',');
+    }
+    if (typeof returnedExtraFields === 'object') {
+      returnedExtraFields = returnedExtraFields.join(',');
     }
 
     return this.apollo
       .watchQuery<T>({
         query: gql`
           {
-            ${name}${parametersString} {${returnedFields || 'id'}}
+            ${name}${parametersString} {data{${returnedDataFields || 'id'}}${returnedExtraFields || ''}}
           }
         `,
       })

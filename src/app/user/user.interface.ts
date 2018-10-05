@@ -1,4 +1,5 @@
 import { GameInterface } from '../game.interface';
+import { QueryInterface } from '../query.interface';
 
 export interface UserInterface {
   id?: number;
@@ -27,8 +28,5 @@ export interface UserInterface {
 }
 
 export interface UsersQueryInterface {
-  users: {
-    data: UserInterface[];
-    __typename: string;
-  };
+  users: QueryInterface<UserInterface[]>;
 }

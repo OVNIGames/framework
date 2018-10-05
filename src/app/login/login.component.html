@@ -1,23 +1,45 @@
-<mat-spinner *ngIf="loading"></mat-spinner>
-<div [style.display]="loading ? 'none' : ''">
-  <div>
-    <mat-form-field>
-      <mat-label>E-mail</mat-label>
-      <input matInput [formControl]="email" required>
-      <mat-error *ngIf="email.invalid">{{ getEmailErrorMessage() }}</mat-error>
-    </mat-form-field>
+<mat-card>
+  <div class="spinner-space" *ngIf="loading">
+    <mat-spinner></mat-spinner>
   </div>
-  <div>
-    <mat-form-field>
-      <mat-label>Password</mat-label>
-      <input matInput [formControl]="password" required>
-      <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
-    </mat-form-field>
+  <div [style.display]="loading ? 'none' : ''">
+    <div>
+      <mat-form-field>
+        <mat-label>E-mail</mat-label>
+        <input matInput [formControl]="email" required>
+        <mat-error *ngIf="email.invalid">{{ getEmailErrorMessage() }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput [formControl]="password" required>
+        <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div *ngIf="allowRemember">
+      <mat-checkbox [(ngModel)]="remember">Remember me</mat-checkbox>
+    </div>
+    <div>
+      <button mat-flat-button color="primary" (click)="login()">Login</button>
+    </div>
+    <div *ngIf="allowOAuth">
+      <div class="spinner-space" *ngIf="oAuthLoading">
+        <mat-spinner></mat-spinner>
+      </div>
+      <div *ngIf="!oAuthLoading">
+        <div class="or-separator">
+          <hr>
+          <div class="text">Or</div>
+          <hr>
+        </div>
+        <div class="oauth-bar">
+          <a *ngFor="let service of oauthServices" href="{{ service.login }}" title="{{ service.name }}"
+             [style.background]="service.color" mat-flat-button>
+            <span class="svg" [innerHTML]="service.svg"></span>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <mat-checkbox [(ngModel)]="remember">Remember me</mat-checkbox>
-  </div>
-  <div>
-    <button mat-button (click)="login()">Login</button>
-  </div>
-</div>
+</mat-card>
