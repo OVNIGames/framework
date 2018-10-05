@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from './login/login.module';
 import { UserModule } from './user/user.module';
+import { RegisterModule } from './register/register.module';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { UserModule } from './user/user.module';
 
     UserModule,
     LoginModule,
+    RegisterModule,
   ],
   providers: [
     SocketService,

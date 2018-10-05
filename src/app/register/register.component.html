@@ -1,3 +1,39 @@
-<p>
-  register works!
-</p>
+<mat-card>
+  <div class="spinner-space" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div [style.display]="loading ? 'none' : ''">
+    <p>Or create a new account:</p>
+    <form (submit)="register()">
+      <div>
+        <mat-form-field>
+          <mat-label>E-mail</mat-label>
+          <input matInput [formControl]="email" required>
+          <mat-error *ngIf="email.invalid">{{ getEmailErrorMessage() }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input type="password" matInput [formControl]="password" required>
+          <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Password confirmation</mat-label>
+          <input type="password" matInput [formControl]="passwordConfirmation" required>
+          <mat-error *ngIf="passwordConfirmation.invalid">
+            You must enter the same password for confirmation
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="allowRemember">
+        <mat-checkbox [(ngModel)]="remember" [ngModelOptions]="{standalone: true}">Remember me</mat-checkbox>
+      </div>
+      <div>
+        <button type="submit" mat-flat-button color="primary">Register</button>
+      </div>
+    </form>
+  </div>
+</mat-card>

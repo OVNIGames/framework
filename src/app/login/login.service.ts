@@ -19,7 +19,7 @@ export class LoginService {
     return this.api.mutate<LoginResult>('login', {
       email,
       password,
-      remember
+      remember,
     }, 'id,name,email');
   }
 
