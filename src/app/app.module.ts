@@ -5,13 +5,15 @@ import { AppComponent } from './app.component';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { SocketService } from './socket.service';
-import { MatCheckboxModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from './login/login.module';
 import { UserModule } from './user/user.module';
 import { RegisterModule } from './register/register.module';
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
+import { GamesListModule } from './games-list/games-list.module';
 
 @NgModule({
   declarations: [
@@ -23,15 +25,16 @@ import { RegisterModule } from './register/register.module';
     CommonModule,
     GraphQLModule,
     HttpClientModule,
-    FormsModule,
+    RouterModule,
 
-    MatCheckboxModule,
-    MatInputModule,
     MatProgressSpinnerModule,
 
     UserModule,
+    GamesListModule,
+
     LoginModule,
     RegisterModule,
+    AppRoutingModule,
   ],
   providers: [
     SocketService,
