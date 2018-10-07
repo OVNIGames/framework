@@ -33,3 +33,7 @@ mat-checkbox {
 .spinner-space mat-spinner {
   margin: 0 auto;
 }
+
+.introduction {
+  margin-top: 0;
+}

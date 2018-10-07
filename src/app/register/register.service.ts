@@ -16,7 +16,7 @@ export class RegisterService {
   }
 
   register(email: string, password: string, firstname?: string, lastname?: string, language?: string, biography?: string, sex?: number | null, phone?: string, photo?: File, login?: boolean, remember?: boolean): Observable<ApolloQueryResult<RegisterResult>> {
-    return this.api.mutate<RegisterResult>('register', {
+    const parameters = {
       email,
       password,
       firstname,
@@ -28,6 +28,13 @@ export class RegisterService {
       photo,
       login,
       remember,
-    }, 'id,name,email');
+    };
+    for (let key in parameters) {
+      if (parameters[key] === null) {
+        delete parameters[key];
+      }
+    }
+
+    return this.api.mutate<RegisterResult>('register', parameters, 'id,name,email');
   }
 }
