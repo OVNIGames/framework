@@ -10,7 +10,6 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class SocketService {
-
   private readonly messages: Subject<MessageEvent>;
   private socket;
 

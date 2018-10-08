@@ -1,5 +1,5 @@
 <div class="spinner-space" *ngIf="loading">
-  <mat-spinner></mat-spinner>
+  <mat-spinner [diameter]="32"></mat-spinner>
 </div>
 <div *ngIf="!loading && user">
   <og-user [user]="user" (onUserLoggedOut)="user = null"></og-user>

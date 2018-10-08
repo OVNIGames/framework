@@ -1,6 +1,6 @@
 <mat-card>
   <div class="spinner-space" *ngIf="loading">
-    <mat-spinner></mat-spinner>
+    <mat-spinner [diameter]="32"></mat-spinner>
   </div>
   <div [style.display]="loading ? 'none' : ''">
     <form (submit)="login()">
@@ -27,7 +27,7 @@
     </form>
     <div *ngIf="allowOAuth">
       <div class="spinner-space" *ngIf="oAuthLoading">
-        <mat-spinner></mat-spinner>
+        <mat-spinner [diameter]="32"></mat-spinner>
       </div>
       <div *ngIf="!oAuthLoading">
         <div class="or-separator">

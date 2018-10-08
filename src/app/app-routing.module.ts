@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { GamesListComponent } from './games-list/games-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/games', pathMatch: 'full' },
-  { path: 'games', component: GamesListComponent },
+  { path: 'games', loadChildren: './games-list/loader.module#GamesListLoaderModule' },
 ];
 
 @NgModule({
