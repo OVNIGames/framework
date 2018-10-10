@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
 import { Subscription } from 'apollo-client/util/Observable';
-import { SocketService } from './socket.service';
-import { ApolloQueryResult } from 'apollo-client/core/types';
-import { UserInterface, UsersQueryInterface } from './user/user.interface';
+import { UserInterface } from './user/user.interface';
+import { ApiService } from './api.service';
+import { UserService } from './user/user.service';
+import { User } from './user/user';
 
 @Component({
   selector: 'og-root',
@@ -19,47 +18,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private querySubscription: Subscription;
 
-  constructor(private apollo: Apollo, private socket: SocketService) {
+  constructor(private api: ApiService, private userService: UserService) {
   }
 
   updateWatcher() {
-    this.socket.sendMessage({
-      [this.commonTextWatched ? 'join' : 'leave']: 'commonText',
-    });
+    this.api.toggleWatching('commonText', this.commonTextWatched);
   }
 
   sendCommonText() {
-    this.socket.sendMessage({
+    this.api.sendMessage({
       commonText: this.commonText,
     });
   }
 
   ngOnInit() {
-    this.socket.getMessages().subscribe(msg => {
+    this.api.getMessages().subscribe(msg => {
       if (msg['commonText']) {
         this.commonText = msg['commonText'];
       }
     });
-    this.querySubscription = this.apollo
-      .watchQuery({
-        query: gql`
-          {
-            users(current: true) {
-              data {
-                name
-                games {
-                  name
-                }
-              }
-            }
-          }
-        `,
-      })
-      .valueChanges
-      .subscribe((result: ApolloQueryResult<UsersQueryInterface>) => {
-        this.loading = result.loading;
-        this.user = result.data.users.data[0];
-      });
+    this.querySubscription = this.userService.getCurrent().subscribe((user: User) => {
+      this.loading = false;
+      this.user = user;
+    });
   }
 
   ngOnDestroy() {

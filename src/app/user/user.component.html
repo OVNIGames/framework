@@ -1,5 +1,26 @@
 <mat-card>
-  <div class="name">{{ user.name }}</div>
-  <button mat-flat-button (click)="logout()" *ngIf="!loading">Logout</button>
   <mat-spinner *ngIf="loading" [diameter]="32"></mat-spinner>
+  <div *ngIf="!loading">
+    <div class="row">
+      <div class="name">{{ user.name }}</div>
+      <button mat-stroked-button (click)="edit()" *ngIf="!editing && user.id">Edit</button>
+      <button mat-flat-button (click)="logout()">Logout</button>
+    </div>
+    <div *ngIf="editing">
+      <div>
+        <mat-form-field>
+          <mat-label>First name</mat-label>
+          <input matInput [(ngModel)]="firstName">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Last name</mat-label>
+          <input matInput [(ngModel)]="lastName">
+        </mat-form-field>
+      </div>
+      <button mat-stroked-button (click)="cancel()">Cancel</button>
+      <button type="submit" mat-flat-button (click)="save()">Save</button>
+    </div>
+  </div>
 </mat-card>

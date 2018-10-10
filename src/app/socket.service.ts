@@ -22,9 +22,27 @@ export class SocketService {
   }
 
   sendMessage(message: Object) {
-    return this.messages.next(new MessageEvent('message', {
+    this.messages.next(new MessageEvent('message', {
       data: message,
     }));
+  }
+
+  join(room: string) {
+    this.sendMessage({
+      join: room,
+    });
+  }
+
+  leave(room: string) {
+    this.sendMessage({
+      leave: room,
+    });
+  }
+
+  toggleWatching(room: string, watching: boolean) {
+    this.sendMessage({
+      [watching ? 'join' : 'leave']: room,
+    });
   }
 
   connect(): Subject<MessageEvent> {

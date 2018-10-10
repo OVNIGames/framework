@@ -2,10 +2,10 @@
   <mat-spinner [diameter]="32"></mat-spinner>
 </div>
 <div *ngIf="!loading && user">
-  <og-user [user]="user" (onUserLoggedOut)="user = null"></og-user>
+  <og-user [user]="user" (userLoggedOut)="user = null"></og-user>
   <router-outlet></router-outlet>
 </div>
 <div *ngIf="!loading && !user">
-  <og-login (onUserLoggedIn)="user = $event"></og-login>
-  <og-register (onUserRegistered)="user = $event"></og-register>
+  <og-login (userLoggedIn)="user = $event"></og-login>
+  <og-register (userRegistered)="user = $event"></og-register>
 </div>

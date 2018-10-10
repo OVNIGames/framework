@@ -18,7 +18,19 @@ export class ApiService {
   }
 
   sendMessage(message: Object) {
-    return this.socket.sendMessage(message);
+    this.socket.sendMessage(message);
+  }
+
+  join(room: string) {
+    this.socket.join(room);
+  }
+
+  leave(room: string) {
+    this.socket.leave(room);
+  }
+
+  toggleWatching(room: string, watching: boolean) {
+    this.socket.toggleWatching(room, watching);
   }
 
   query<T>(name: string, parameters?: object, returnedDataFields?: string | string[], returnedExtraFields?: string | string[]): Observable<ApolloQueryResult<T>> {
@@ -32,15 +44,13 @@ export class ApiService {
       returnedExtraFields = returnedExtraFields.join(',');
     }
 
-    return this.apollo
-      .watchQuery<T>({
-        query: gql`
-          {
-            ${name}${parametersString} {data{${returnedDataFields || 'id'}}${returnedExtraFields || ''}}
-          }
-        `,
-      })
-      .valueChanges;
+    return this.apollo.watchQuery<T>({
+      query: gql`
+        {
+          ${name}${parametersString} {data{${returnedDataFields || 'id'}}${returnedExtraFields || ''}}
+        }
+      `,
+    }).valueChanges;
   }
 
   mutate<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<FetchResult<T>> {
@@ -52,13 +62,12 @@ export class ApiService {
     }
     returnedFields = returnedFields ? `{${returnedFields}}` : '';
 
-    return this.apollo
-      .mutate<T>({
-        mutation: gql`
-          mutation {
-            ${name}${parametersString} ${returnedFields}
-          }
-        `,
-      });
+    return this.apollo.mutate<T>({
+      mutation: gql`
+        mutation {
+          ${name}${parametersString} ${returnedFields}
+        }
+      `,
+    });
   }
 }

@@ -3,6 +3,7 @@ import { QueryInterface } from '../query.interface';
 
 export interface UserInterface {
   id?: number;
+  room?: string;
   name?: string;
   lastname?: string;
   firstname?: string;
@@ -23,10 +24,16 @@ export interface UserInterface {
   last_action_at?: Date|null;
   trial_ends_at?: Date|null;
   last_network_event?: Date|null;
-  games: GameInterface[];
-  __typename: string;
+  games?: GameInterface[];
+  __typename?: string;
 }
 
 export interface UsersQueryInterface {
   users: QueryInterface<UserInterface[]>;
 }
+
+export interface UserModificationInterface {
+  id: number;
+  properties: object;
+}
+

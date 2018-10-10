@@ -11,7 +11,7 @@ import { ApolloQueryResult } from 'apollo-client';
 })
 export class RegisterComponent implements OnInit {
   @Input() allowRemember = true;
-  @Output() onUserRegistered: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
+  @Output() userRegistered: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
   loading = false;
   remember = false;
   email = new FormControl('', [Validators.required, Validators.email]);
@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit {
   }
 
   auth(user: UserInterface) {
-    this.onUserRegistered.emit(user);
+    this.userRegistered.emit(user);
   }
 
   getEmailErrorMessage() {

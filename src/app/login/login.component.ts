@@ -19,7 +19,7 @@ baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 export class LoginComponent implements OnInit {
   @Input() allowRemember = true;
   @Input() allowOAuth = true;
-  @Output() onUserLoggedIn: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
+  @Output() userLoggedIn: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
   readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
   readonly oauthErrorUrl = baseUrl + 'oauthError';
   loading = true;
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
   }
 
   auth(user: UserInterface) {
-    this.onUserLoggedIn.emit(user);
+    this.userLoggedIn.emit(user);
   }
 
   getEmailErrorMessage() {

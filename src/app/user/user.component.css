@@ -1,8 +1,11 @@
 mat-card {
-  display: flex;
-  width: 100%;
   max-width: 320px;
   margin: 20px auto;
+}
+
+.row {
+  display: flex;
+  width: 100%;
   flex-direction: row;
 }
 
