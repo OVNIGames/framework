@@ -4,7 +4,6 @@ import { SocketService } from './socket.service';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
-import { FetchResult } from 'apollo-link';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +52,7 @@ export class ApiService {
     }).valueChanges;
   }
 
-  mutate<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<FetchResult<T>> {
+  mutate<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<ApolloQueryResult<T>> {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';

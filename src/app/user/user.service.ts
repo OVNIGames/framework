@@ -3,8 +3,8 @@ import { User } from './user';
 import { ApiService } from '../api.service';
 import { Observable, Observer, Subject } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
-import { UserInterface, UserModificationInterface, UsersQueryInterface } from './user.interface';
-import { FetchResult } from 'apollo-link';
+import { UserInterface, UsersQueryInterface } from './user.interface';
+import { LoginResult } from '../login/login.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,16 @@ export class UserService {
   private usersByRoom: {[room: string]: User} = {};
   private usersById: {[id: number]: User} = {};
   private usersByEmail: {[email: string]: User} = {};
+  private readonly userDataFields = `
+    id
+    firstname
+    lastname
+    name
+    room
+    games {
+      name
+    }
+  `;
 
   constructor(private api: ApiService) {
     api.getMessages().subscribe((message: MessageEvent) => {
@@ -28,6 +38,31 @@ export class UserService {
       this.api.leave(this.currentUser.room);
     }
     this.currentUser = null;
+  }
+
+  login(email: string, password: string, remember?: boolean): Promise<User | null> {
+    return new Promise(resolve => {
+      const mutation = this.api.mutate<LoginResult>('login', {
+        email,
+        password,
+        remember,
+      }, this.userDataFields).subscribe((result: ApolloQueryResult<LoginResult>) => {
+        if (!result.data.login) {
+          resolve(null);
+
+          return;
+        }
+
+        const user = new User(result.data.login, null, (properties: UserInterface) => {
+          properties.id = user.id;
+          this.api.mutate<{updateUser: UserInterface}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: UserInterface}>) => {
+            user.updated_at = updateResult.data.updateUser.updated_at;
+          });
+        });
+        this.registerUser(user, true);
+        resolve(user);
+      });
+    });
   }
 
   logout() {
@@ -98,21 +133,15 @@ export class UserService {
         return;
       }
 
-      this.api.query('users', parameters, `
-        id
-        firstname
-        lastname
-        name
-        room
-        games {
-          name
+      this.api.query('users', parameters, this.userDataFields).subscribe((result: ApolloQueryResult<UsersQueryInterface>) => {
+        if (!result.data.users.data[0]) {
+          userSubscription.next(null);
+          return;
         }
-      `).subscribe((result: ApolloQueryResult<UsersQueryInterface>) => {
         user = new User(result.data.users.data[0], userSubscription, (properties: UserInterface) => {
           properties.id = user.id;
-          this.api.mutate<UserInterface>('updateUser', properties, 'updated_at').subscribe((updateResult: FetchResult<UserInterface>) => {
-            console.log(updateResult);
-            user.updated_at = updateResult.context.updated_at;
+          this.api.mutate<{updateUser: UserInterface}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: UserInterface}>) => {
+            user.updated_at = updateResult.data.updateUser.updated_at;
           });
         });
         this.registerUser(user, parameters['current']);
@@ -141,15 +170,15 @@ export class UserService {
     return Subject.create(observer, observable);
   }
 
-  getCurrent(): Subject<User> {
+  getCurrent(): Subject<User | null> {
     return this.get({current: true});
   }
 
-  getById(id: number): Subject<User> {
+  getById(id: number): Subject<User | null> {
     return this.get({id});
   }
 
-  getByEmail(email: string): Subject<User> {
+  getByEmail(email: string): Subject<User | null> {
     return this.get({email});
   }
 

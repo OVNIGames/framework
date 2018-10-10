@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LoginResult, LoginService } from './login.service';
+import { LoginService } from './login.service';
 import { User } from '../user/user';
 import { ApolloQueryResult } from 'apollo-client';
 import { FormControl, Validators } from '@angular/forms';
 import { OauthInterface, OauthQueryInterface } from './oauth.interface';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
-import { UserInterface } from '../user/user.interface';
 
 let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
 baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
@@ -19,7 +18,7 @@ baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 export class LoginComponent implements OnInit {
   @Input() allowRemember = true;
   @Input() allowOAuth = true;
-  @Output() userLoggedIn: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
+  @Output() userLoggedIn: EventEmitter<User> = new EventEmitter<User>();
   readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
   readonly oauthErrorUrl = baseUrl + 'oauthError';
   loading = true;
@@ -65,10 +64,10 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.loading = true;
-    this.loginService.login(this.email.value, this.password.value, this.remember).subscribe((result: ApolloQueryResult<LoginResult>) => {
+    this.loginService.login(this.email.value, this.password.value, this.remember).then((user: User | null) => {
       this.loading = false;
-      if (result.data.login) {
-        this.auth(result.data.login);
+      if (user) {
+        this.auth(user);
 
         return;
       }
@@ -79,7 +78,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  auth(user: UserInterface) {
+  auth(user: User) {
     this.userLoggedIn.emit(user);
   }
 
