@@ -7,7 +7,7 @@ import { User } from './user';
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
-export class UserComponent implements OnChanges {
+export class UserComponent implements OnInit, OnChanges {
   loading = false;
   editing = false;
   firstName = '';
@@ -18,14 +18,26 @@ export class UserComponent implements OnChanges {
   constructor(private userService: UserService) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnInit(): void {
+    this.userService.getCurrent().subscribe((user: User) => {
+      const subject = user.getSubject();
+      console.log(subject);
+      if (subject) {
+        subject.subscribe((user: User) => {
+          console.log(user);
+        });
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes.user && changes.user.currentValue) {
       this.firstName = changes.user.currentValue.firstname || '';
       this.lastName = changes.user.currentValue.lastname || '';
     }
   }
 
-  logout() {
+  logout(): void {
     this.loading = true;
     this.firstName = '';
     this.lastName = '';
@@ -35,15 +47,15 @@ export class UserComponent implements OnChanges {
     });
   }
 
-  edit() {
+  edit(): void {
     this.editing = true;
   }
 
-  cancel() {
+  cancel(): void {
     this.editing = false;
   }
 
-  save() {
+  save(): void {
     this.user.extend({
       firstname: this.firstName,
       lastname: this.lastName,

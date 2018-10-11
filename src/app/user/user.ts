@@ -1,6 +1,6 @@
 import { UserInterface, UserModificationInterface } from './user.interface';
 import { GameInterface } from '../game.interface';
-import { Observer } from 'rxjs';
+import { Observer, Subject } from 'rxjs';
 
 export class User implements UserInterface {
   __typename?: string;
@@ -28,8 +28,16 @@ export class User implements UserInterface {
   trial_ends_at?: Date | null;
   updated_at?: Date;
 
-  constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void) {
+  constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void, private subjectGetter?: () => Subject<User>) {
     Object.assign(this, properties);
+  }
+
+  getSubscription() {
+    return this.subscription;
+  }
+
+  getSubject(): Subject<User> | null {
+    return this.subjectGetter ? this.subjectGetter() : null;
   }
 
   extend(properties: UserInterface) {

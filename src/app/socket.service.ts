@@ -1,10 +1,13 @@
 import { Observable, Subject } from 'rxjs';
-
-const uri = 'http://localhost:3042';
-
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { environment } from '../environments/environment';
+
+export interface ExtendMessage<T> extends MessageEvent {
+  action: 'extend';
+  properties: T;
+  room: string;
+}
 
 @Injectable({
   providedIn: 'root',

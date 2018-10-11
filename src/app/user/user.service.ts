@@ -5,6 +5,7 @@ import { Observable, Observer, Subject } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
 import { UserInterface, UsersQueryInterface } from './user.interface';
 import { LoginResult } from '../login/login.service';
+import { ExtendMessage } from '../socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +27,19 @@ export class UserService {
   `;
 
   constructor(private api: ApiService) {
-    api.getMessages().subscribe((message: MessageEvent) => {
-      if (message.data) {
-        console.log(message.data);
+    api.getMessages().subscribe((message: ExtendMessage<UserInterface>) => {
+      console.log(message);
+      if (message.action === 'extend') {
+        const user = this.getRegisteredUser({room: message.room});
+        console.log(user);
+        if (user) {
+          Object.assign(user, message.properties);
+          const subscription = user.getSubscription();
+          console.log(subscription);
+          if (subscription) {
+            subscription.next(user);
+          }
+        }
       }
     });
   }
@@ -42,7 +53,7 @@ export class UserService {
 
   login(email: string, password: string, remember?: boolean): Promise<User | null> {
     return new Promise(resolve => {
-      const mutation = this.api.mutate<LoginResult>('login', {
+      this.api.mutate<LoginResult>('login', {
         email,
         password,
         remember,
@@ -119,12 +130,16 @@ export class UserService {
         return this.usersById[id];
       }
     }
+    if (parameters['room'] && this.usersByRoom[parameters['room']]) {
+      return this.usersByRoom[parameters['room']];
+    }
 
     return null;
   }
 
   get(parameters: object): Subject<User> {
     let user: User;
+    let subject;
     const observable = new Observable((userSubscription: Observer<User>) => {
       const registeredUser = this.getRegisteredUser(parameters);
       if (registeredUser) {
@@ -143,7 +158,7 @@ export class UserService {
           this.api.mutate<{updateUser: UserInterface}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: UserInterface}>) => {
             user.updated_at = updateResult.data.updateUser.updated_at;
           });
-        });
+        }, () => subject);
         this.registerUser(user, parameters['current']);
         userSubscription.next(user);
       });
@@ -167,7 +182,7 @@ export class UserService {
       },
     };
 
-    return Subject.create(observer, observable);
+    return subject = Subject.create(observer, observable);
   }
 
   getCurrent(): Subject<User | null> {
