@@ -20,13 +20,11 @@ export class UserComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.userService.getCurrent().subscribe((user: User) => {
-      const subject = user.getSubject();
-      console.log(subject);
-      if (subject) {
-        subject.subscribe((user: User) => {
-          console.log(user);
-        });
-      }
+      user.getObservable().subscribe((user: User) => {
+        this.user = user;
+        this.firstName = user.firstname;
+        this.lastName = user.lastname;
+      });
     });
   }
 
@@ -56,7 +54,7 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   save(): void {
-    this.user.extend({
+    this.user.update({
       firstname: this.firstName,
       lastname: this.lastName,
     });

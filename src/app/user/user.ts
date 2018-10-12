@@ -1,6 +1,7 @@
 import { UserInterface, UserModificationInterface } from './user.interface';
 import { GameInterface } from '../game.interface';
-import { Observer, Subject } from 'rxjs';
+import { Observable, Observer, Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
 
 export class User implements UserInterface {
   __typename?: string;
@@ -27,21 +28,40 @@ export class User implements UserInterface {
   room?: string;
   trial_ends_at?: Date | null;
   updated_at?: Date;
+  private readonly observable: Observable<User>;
+  private observableCallback: () => void = () => {};
 
-  constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void, private subjectGetter?: () => Subject<User>) {
+  constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void) {
     Object.assign(this, properties);
+
+    this.observable = Observable.create(messenger => {
+      this.observableCallback = () => {
+        messenger.next(this);
+      };
+
+      return () => {
+        this.observableCallback = () => {};
+      };
+    }).pipe(share());
   }
 
   getSubscription() {
     return this.subscription;
   }
 
-  getSubject(): Subject<User> | null {
-    return this.subjectGetter ? this.subjectGetter() : null;
+  getObservable(): Observable<User> {
+    return this.observable;
   }
 
   extend(properties: UserInterface) {
     Object.assign(this, properties);
+    this.observableCallback();
+
+    return this;
+  }
+
+  update(properties: UserInterface) {
+    this.extend(properties);
     if (this.subscription) {
       this.subscription.next(this);
     }

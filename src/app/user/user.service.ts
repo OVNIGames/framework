@@ -28,14 +28,11 @@ export class UserService {
 
   constructor(private api: ApiService) {
     api.getMessages().subscribe((message: ExtendMessage<UserInterface>) => {
-      console.log(message);
       if (message.action === 'extend') {
         const user = this.getRegisteredUser({room: message.room});
-        console.log(user);
         if (user) {
-          Object.assign(user, message.properties);
+          user.extend(message.properties);
           const subscription = user.getSubscription();
-          console.log(subscription);
           if (subscription) {
             subscription.next(user);
           }
@@ -139,7 +136,6 @@ export class UserService {
 
   get(parameters: object): Subject<User> {
     let user: User;
-    let subject;
     const observable = new Observable((userSubscription: Observer<User>) => {
       const registeredUser = this.getRegisteredUser(parameters);
       if (registeredUser) {
@@ -158,7 +154,7 @@ export class UserService {
           this.api.mutate<{updateUser: UserInterface}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: UserInterface}>) => {
             user.updated_at = updateResult.data.updateUser.updated_at;
           });
-        }, () => subject);
+        });
         this.registerUser(user, parameters['current']);
         userSubscription.next(user);
       });
@@ -176,13 +172,13 @@ export class UserService {
             }
           });
           if (touched) {
-            user.extend(properties);
+            user.update(properties);
           }
         }
       },
     };
 
-    return subject = Subject.create(observer, observable);
+    return Subject.create(observer, observable);
   }
 
   getCurrent(): Subject<User | null> {
@@ -200,7 +196,7 @@ export class UserService {
   update(id: number, properties: object) {
     return new Promise(resolve => {
       this.getById(id).subscribe((user: User) => {
-        resolve(user.extend(properties));
+        resolve(user.update(properties));
       });
     });
   }
