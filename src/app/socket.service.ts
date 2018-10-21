@@ -50,7 +50,11 @@ export class SocketService {
   }
 
   connect(): Subject<MessageEvent> {
-    this.socket = io(environment.socket_uri);
+    this.socket = io(environment.socket_uri, {
+      path: '/socket.io',
+      transports: ['websocket'],
+      secure: environment.socket_secure,
+    });
 
     this.socket.on('connect', () => {
       console.log('connect-socket');

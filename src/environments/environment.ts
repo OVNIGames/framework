@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   socket_uri: '',
+  socket_secure: false,
   graphql_uri: '/graphql',
 };
 
