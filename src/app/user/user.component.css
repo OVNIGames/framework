@@ -18,3 +18,7 @@ mat-card {
 button {
   flex: 0;
 }
+
+.inline-button {
+  min-width: 78px;
+}
