@@ -31,6 +31,7 @@ export class SocketService {
   }
 
   join(room: string) {
+    console.log('join', room);
     this.sendMessage({
       join: room,
     });
@@ -50,6 +51,10 @@ export class SocketService {
 
   connect(): Subject<MessageEvent> {
     this.socket = io(environment.socket_uri);
+
+    this.socket.on('connect', () => {
+      console.log('connect-socket');
+    });
 
     window.onbeforeunload = () => {
       this.socket.close();
