@@ -1,3 +1,7 @@
+mat-spinner {
+  margin: 32px auto;
+}
+
 mat-card {
   max-width: 320px;
   margin: 20px auto;

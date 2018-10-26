@@ -31,7 +31,6 @@ export class SocketService {
   }
 
   join(room: string) {
-    console.log('join', room);
     this.sendMessage({
       join: room,
     });
@@ -54,10 +53,6 @@ export class SocketService {
       path: '/socket.io',
       transports: ['websocket'],
       secure: environment.socket_secure,
-    });
-
-    this.socket.on('connect', () => {
-      console.log('connect-socket');
     });
 
     window.onbeforeunload = () => {
