@@ -18,7 +18,8 @@ interface GamesListResultInterface {
   styleUrls: ['./games-list.component.css'],
 })
 export class GamesListComponent implements OnInit {
-  private list
+  protected list: GamesListInterface = null;
+  protected creating = false;
 
   constructor(private api: ApiService) {
   }
@@ -38,4 +39,7 @@ export class GamesListComponent implements OnInit {
     });
   }
 
+  create() {
+    this.creating = true;
+  }
 }

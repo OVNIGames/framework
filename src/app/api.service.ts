@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SocketService } from './socket.service';
+import { ExtendMessage, SocketService } from './socket.service';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
@@ -9,6 +9,8 @@ import { ApolloQueryResult } from 'apollo-client';
   providedIn: 'root',
 })
 export class ApiService {
+  protected extendCallbacks: Array<((message: ExtendMessage) => void)> = [];
+
   constructor(private apollo: Apollo, private socket: SocketService) {
   }
 
@@ -68,5 +70,27 @@ export class ApiService {
         }
       `,
     });
+  }
+
+  onExtend<T>(callback: (message: ExtendMessage) => void, room?: string) {
+    if (this.extendCallbacks.length) {
+      this.getMessages().subscribe((message: ExtendMessage<T>) => {
+        if (message.action === 'extend' && (!room || room === message.room)) {
+          this.extendCallbacks.forEach(callback => {
+            callback(message);
+          });
+        }
+      });
+    }
+
+    this.extendCallbacks.push(callback);
+
+    return () => {
+      this.extendCallbacks = this.extendCallbacks.filter(c => c !== callback);
+    };
+  }
+
+  onRoomExtend<T>(room: string, callback: (message: ExtendMessage) => void) {
+    return this.onExtend(callback, room);
   }
 }

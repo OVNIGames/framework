@@ -1,0 +1,20 @@
+<div>
+  <mat-spinner *ngIf="!languages.length" [diameter]="32"></mat-spinner>
+  <form *ngIf="languages.length">
+    <mat-form-field>
+      <mat-label>Game name</mat-label>
+      <input matInput name="name" [(ngModel)]="name">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select name="default_language_id" [(ngModel)]="defaultLanguage" placeholder="Default language">
+        <mat-option *ngFor="let language of languages" [value]="language.id">
+          {{ language.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <p><em><small>You can still add translations later</small></em></p>
+    <div>
+      <button type="submit" mat-flat-button color="primary">Submit</button>
+    </div>
+  </form>
+</div>

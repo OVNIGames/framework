@@ -8,9 +8,12 @@
         <small>by {{ game.owner.name }}</small>
       </button>
     </mat-card>
-    <mat-card>
+    <mat-card *ngIf="!creating">
       <p>Or create your own game now!</p>
       <button mat-flat-button color="primary" (click)="create()">Create a new game</button>
+    </mat-card>
+    <mat-card *ngIf="creating">
+      <og-game-creator></og-game-creator>
     </mat-card>
   </div>
 </div>

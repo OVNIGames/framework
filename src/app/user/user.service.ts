@@ -27,15 +27,13 @@ export class UserService {
   `;
 
   constructor(private api: ApiService) {
-    api.getMessages().subscribe((message: ExtendMessage<UserInterface>) => {
-      if (message.action === 'extend') {
-        const user = this.getRegisteredUser({room: message.room});
-        if (user) {
-          user.extend(message.properties);
-          const subscription = user.getSubscription();
-          if (subscription) {
-            subscription.next(user);
-          }
+    api.onExtend<UserInterface>((message: ExtendMessage<UserInterface>) => {
+      const user = this.getRegisteredUser({room: message.room});
+      if (user) {
+        user.extend(message.properties);
+        const subscription = user.getSubscription();
+        if (subscription) {
+          subscription.next(user);
         }
       }
     });
