@@ -11,11 +11,11 @@ import { ExtendMessage } from '../socket.service';
   providedIn: 'root',
 })
 export class UserService {
-  private currentUser: User;
-  private usersByRoom: {[room: string]: User} = {};
-  private usersById: {[id: number]: User} = {};
-  private usersByEmail: {[email: string]: User} = {};
-  private readonly userDataFields = `
+  protected currentUser: User;
+  protected usersByRoom: {[room: string]: User} = {};
+  protected usersById: {[id: number]: User} = {};
+  protected usersByEmail: {[email: string]: User} = {};
+  protected readonly userDataFields = `
     id
     firstname
     lastname

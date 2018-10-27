@@ -1,3 +1,16 @@
-<p>
-  games-list works!
-</p>
+<div>
+  <mat-spinner [diameter]="32" *ngIf="!this.list"></mat-spinner>
+  <div *ngIf="this.list">
+    <mat-card>
+      <p>{{ list.count }} games are being created. Try our favorites:</p>
+      <button *ngFor="let game of list.top" mat-flat-button color="primary" (click)="play(game.id)" class="play">
+        {{ game.name }}
+        <small>by {{ game.owner.name }}</small>
+      </button>
+    </mat-card>
+    <mat-card>
+      <p>Or create your own game now!</p>
+      <button mat-flat-button color="primary" (click)="create()">Create a new game</button>
+    </mat-card>
+  </div>
+</div>

@@ -8,12 +8,12 @@ import { User } from './user';
   styleUrls: ['./user.component.css'],
 })
 export class UserComponent implements OnInit, OnChanges {
-  loading = false;
-  editing = false;
-  firstName = '';
-  lastName = '';
-  @Input() user: User;
-  @Output() userLoggedOut: EventEmitter<boolean> = new EventEmitter<boolean>();
+  protected loading = false;
+  protected editing = false;
+  protected firstName = '';
+  protected lastName = '';
+  @Input() protected user: User;
+  @Output() protected userLoggedOut: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private userService: UserService) {
   }

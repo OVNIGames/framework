@@ -36,17 +36,17 @@ export class ApiService {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';
-    if (typeof returnedDataFields === 'object') {
+    if (returnedDataFields && typeof returnedDataFields === 'object') {
       returnedDataFields = returnedDataFields.join(',');
     }
-    if (typeof returnedExtraFields === 'object') {
+    if (returnedExtraFields && typeof returnedExtraFields === 'object') {
       returnedExtraFields = returnedExtraFields.join(',');
     }
 
     return this.apollo.watchQuery<T>({
       query: gql`
         {
-          ${name}${parametersString} {data{${returnedDataFields || 'id'}}${returnedExtraFields || ''}}
+          ${name}${parametersString} {${returnedDataFields ? `data{${returnedDataFields}}` : ''}${returnedExtraFields || ''}}
         }
       `,
     }).valueChanges;

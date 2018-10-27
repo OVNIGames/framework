@@ -1,6 +1,6 @@
-import { UserInterface, UserModificationInterface } from './user.interface';
+import { UserInterface } from './user.interface';
 import { GameInterface } from '../game.interface';
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 export class User implements UserInterface {
@@ -32,7 +32,7 @@ export class User implements UserInterface {
   private observableCallback: () => void = () => {};
 
   constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void) {
-    Object.assign(this, properties);
+    this.assign(properties);
 
     this.observable = Observable.create(messenger => {
       this.observableCallback = () => {
@@ -53,9 +53,14 @@ export class User implements UserInterface {
     return this.observable;
   }
 
+  assign(properties: object) {
+    (<any>Object).assign(this, properties);
+
+    return this;
+  }
+
   extend(properties: UserInterface) {
-    Object.assign(this, properties);
-    this.observableCallback();
+    this.assign(properties).observableCallback();
 
     return this;
   }

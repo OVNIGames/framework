@@ -32,8 +32,3 @@ export interface UsersQueryInterface {
   users: QueryInterface<UserInterface[]>;
 }
 
-export interface UserModificationInterface {
-  id: number;
-  properties: object;
-}
-
