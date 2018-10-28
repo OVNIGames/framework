@@ -3,7 +3,7 @@ import { ApiService } from '../api.service';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
 
-export interface LoginResult {
+export interface LoginResultInterface {
   login: User | null;
 }
 

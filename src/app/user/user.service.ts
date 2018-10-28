@@ -4,7 +4,7 @@ import { ApiService } from '../api.service';
 import { Observable, Observer, Subject } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
 import { UserInterface, UsersQueryInterface } from './user.interface';
-import { LoginResult } from '../login/login.service';
+import { LoginResultInterface } from '../login/login.service';
 import { ExtendMessage } from '../socket.service';
 
 @Injectable({
@@ -48,11 +48,11 @@ export class UserService {
 
   login(email: string, password: string, remember?: boolean): Promise<User | null> {
     return new Promise(resolve => {
-      this.api.mutate<LoginResult>('login', {
+      this.api.mutate<LoginResultInterface>('login', {
         email,
         password,
         remember,
-      }, this.userDataFields).subscribe((result: ApolloQueryResult<LoginResult>) => {
+      }, this.userDataFields).subscribe((result: ApolloQueryResult<LoginResultInterface>) => {
         if (!result.data.login) {
           resolve(null);
 

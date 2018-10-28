@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LanguageInterface } from '../language.interface';
 import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
+import { GameInterface } from '../game.interface';
 
 interface LanguagesResultInterface {
   languages: {
@@ -9,6 +10,9 @@ interface LanguagesResultInterface {
   };
 }
 
+export interface GameResultInterface {
+  createGame: GameInterface | null;
+}
 const languages: LanguageInterface[] = [];
 
 @Component({
@@ -17,8 +21,11 @@ const languages: LanguageInterface[] = [];
   styleUrls: ['./game-creator.component.css'],
 })
 export class GameCreatorComponent implements OnInit {
+  protected game: GameInterface = null;
+  protected name: string = '';
   protected languages: LanguageInterface[] = languages;
-  protected defaultLanguage: number = null;
+  protected defaultLanguageId: number = null;
+  protected submitting = false;
 
   constructor(private api: ApiService) {
   }
@@ -27,9 +34,31 @@ export class GameCreatorComponent implements OnInit {
     this.api.query('languages', {
       page_size: 200,
     }, 'id,code,name,native_name').subscribe((result: ApolloQueryResult<LanguagesResultInterface>) => {
-      console.log(result);
       this.languages.push.apply(this.languages, result.data.languages.data);
-      console.log(this.languages);
     });
+  }
+
+  create() {
+    this.submitting = true;
+    this.api.mutate<GameResultInterface>('createGame', {
+      name: this.name,
+      default_language_id: this.defaultLanguageId,
+    }, `
+      id
+      room
+      code
+      name
+      default_language {
+        name
+        native_name
+      }
+    `).subscribe((result: ApolloQueryResult<GameResultInterface>) => {
+      this.submitting = false;
+      this.game = result.data.createGame;
+    });
+  }
+
+  dump() {
+    return JSON.stringify(this.game, null, 2);
   }
 }
