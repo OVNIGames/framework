@@ -1,11 +1,13 @@
-<div class="spinner-space" *ngIf="loading">
-  <mat-spinner [diameter]="32"></mat-spinner>
-</div>
-<div *ngIf="!loading && user">
-  <og-user [user]="user" (userLoggedOut)="user = null"></og-user>
-  <router-outlet></router-outlet>
-</div>
-<div *ngIf="!loading && !user">
-  <og-login (userLoggedIn)="user = $event"></og-login>
-  <og-register (userRegistered)="user = $event"></og-register>
+<div class="page">
+  <div class="spinner-space" *ngIf="loading">
+    <mat-spinner [diameter]="32"></mat-spinner>
+  </div>
+  <div *ngIf="!loading && user">
+    <og-user [user]="user" (userLoggedOut)="user = null"></og-user>
+    <router-outlet></router-outlet>
+  </div>
+  <div *ngIf="!loading && !user">
+    <og-login (userLoggedIn)="user = $event"></og-login>
+    <og-register (userRegistered)="user = $event"></og-register>
+  </div>
 </div>

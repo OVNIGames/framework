@@ -9,3 +9,23 @@ $candy-app-warn:    mat-palette($mat-red);
 $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
 
 @include angular-material-theme($candy-app-theme);
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+mat-spinner {
+  margin: 32px auto;
+}
+
+mat-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 20px auto;
+}
