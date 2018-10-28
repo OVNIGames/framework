@@ -1,4 +1,4 @@
-import { GameInterface } from './game.interface';
+import { GameInterface } from './game/game.interface';
 
 export interface LanguageInterface {
   id?: number;

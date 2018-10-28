@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game.interface';
+import { GameInterface } from '../game/game.interface';
 
 interface GamesListInterface {
   top: GameInterface[];
@@ -28,6 +28,7 @@ export class GamesListComponent implements OnInit {
     this.api.query('gamesList', null, null, `
       top {
         id
+        code
         name
         owner {
           name

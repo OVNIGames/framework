@@ -3,7 +3,8 @@
   <div *ngIf="this.list">
     <mat-card>
       <p>{{ list.count }} games are being created. Try our favorites:</p>
-      <button *ngFor="let game of list.top" mat-flat-button color="primary" (click)="play(game.id)" class="play">
+      <button *ngFor="let game of list.top" mat-flat-button color="primary" class="play"
+              routerLink="/play/{{ game.id }}/{{ game.code }}" routerLinkActive="active-link">
         {{ game.name }}
         <small>by {{ game.owner.name }}</small>
       </button>

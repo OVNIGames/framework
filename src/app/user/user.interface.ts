@@ -1,4 +1,4 @@
-import { GameInterface } from '../game.interface';
+import { GameInterface } from '../game/game.interface';
 import { QueryInterface } from '../query.interface';
 
 export interface UserInterface {

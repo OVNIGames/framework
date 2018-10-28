@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game.interface';
+import { GameInterface } from '../game/game.interface';
 import { Observable, Observer } from 'rxjs';
 import { ExtendMessage } from '../socket.service';
 

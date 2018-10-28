@@ -1,5 +1,5 @@
 import { UserInterface } from './user.interface';
-import { GameInterface } from '../game.interface';
+import { GameInterface } from '../game/game.interface';
 import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
 

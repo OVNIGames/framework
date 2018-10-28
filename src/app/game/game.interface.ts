@@ -1,5 +1,5 @@
-import { LanguageInterface } from './language.interface';
-import { UserInterface } from './user/user.interface';
+import { LanguageInterface } from '../language.interface';
+import { UserInterface } from '../user/user.interface';
 
 export interface GameInterface {
   id?: number;

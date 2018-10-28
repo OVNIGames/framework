@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LanguageInterface } from '../language.interface';
 import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game.interface';
+import { GameInterface } from '../game/game.interface';
 
 interface LanguagesResultInterface {
   languages: {
