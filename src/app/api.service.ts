@@ -9,7 +9,7 @@ import { ApolloQueryResult } from 'apollo-client';
   providedIn: 'root',
 })
 export class ApiService {
-  protected extendCallbacks: Array<((message: ExtendMessage) => void)> = [];
+  protected extendCallbacks: Array<((message: ExtendMessage<any>) => void)> = [];
 
   constructor(private apollo: Apollo, private socket: SocketService) {
   }
@@ -72,7 +72,7 @@ export class ApiService {
     });
   }
 
-  onExtend<T>(callback: (message: ExtendMessage) => void, room?: string) {
+  onExtend<T>(callback: (message: ExtendMessage<T>) => void, room?: string) {
     if (this.extendCallbacks.length) {
       this.getMessages().subscribe((message: ExtendMessage<T>) => {
         if (message.action === 'extend' && (!room || room === message.room)) {
@@ -90,7 +90,7 @@ export class ApiService {
     };
   }
 
-  onRoomExtend<T>(room: string, callback: (message: ExtendMessage) => void) {
+  onRoomExtend<T>(room: string, callback: (message: ExtendMessage<T>) => void) {
     return this.onExtend(callback, room);
   }
 }
