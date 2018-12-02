@@ -17,7 +17,10 @@ baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 })
 export class LoginComponent implements OnInit {
   @Input() allowRemember = true;
+  @Input() allowLogin = true;
   @Input() allowOAuth = true;
+  @Input() oAuthExclusion: string[] = [];
+  @Input() oAuthList: null|string[] = null;
   @Output() userLoggedIn: EventEmitter<User> = new EventEmitter<User>();
   readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
   readonly oauthErrorUrl = baseUrl + 'oauthError';
@@ -44,7 +47,13 @@ export class LoginComponent implements OnInit {
     }
 
     this.loginService.getOauthService().subscribe((result: ApolloQueryResult<OauthQueryInterface>) => {
-      this.oauthServices = result.data.oauth.data.map(service => {
+      this.oauthServices = result.data.oauth.data.filter(service => {
+        if (this.oAuthList && this.oAuthList.indexOf(service.code) === -1) {
+          return false;
+        }
+
+        return this.oAuthExclusion.indexOf(service.code) === -1;
+      }).map(service => {
         service.login += (service.login.indexOf('?') === -1 ? '?' : '&') + `redirect_url=${encodeURIComponent(this.oauthRedirectUrl)}&error_url=${encodeURIComponent(this.oauthErrorUrl)}`;
 
         return service;

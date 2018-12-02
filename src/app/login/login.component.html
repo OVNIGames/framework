@@ -3,7 +3,7 @@
     <mat-spinner [diameter]="32"></mat-spinner>
   </div>
   <div [style.display]="loading ? 'none' : ''">
-    <form (submit)="login()">
+    <form *ngIf="allowLogin" (submit)="login()">
       <div>
         <mat-form-field>
           <mat-label>E-mail</mat-label>
