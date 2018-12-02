@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loginService.getOauthService().subscribe((result: ApolloQueryResult<OauthQueryInterface>) => {
+      const list = {};
       this.oauthServices = result.data.oauth.data.filter(service => {
         if (this.oAuthList && this.oAuthList.indexOf(service.code) === -1) {
           return false;
@@ -56,8 +57,15 @@ export class LoginComponent implements OnInit {
       }).map(service => {
         service.login += (service.login.indexOf('?') === -1 ? '?' : '&') + `redirect_url=${encodeURIComponent(this.oauthRedirectUrl)}&error_url=${encodeURIComponent(this.oauthErrorUrl)}`;
 
+        if (this.oAuthList) {
+          list[service.code] = service;
+        }
+
         return service;
       });
+      if (this.oAuthList) {
+        this.oauthServices = this.oAuthList.map(code => list[code]);
+      }
       Promise.all(this.oauthServices.map(service => {
         return new Promise(resolve => {
           this.http.get(service.icon, {responseType: 'text'}).subscribe((svgBody: string) => {
