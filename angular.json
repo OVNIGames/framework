@@ -121,6 +121,41 @@
           }
         }
       }
+    },
+    "NgxMatOvniGames": {
+      "root": "projects/ngx-mat-ovni-games",
+      "sourceRoot": "projects/ngx-mat-ovni-games/src",
+      "projectType": "library",
+      "prefix": "NgxMat",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-mat-ovni-games/tsconfig.lib.json",
+            "project": "projects/ngx-mat-ovni-games/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-mat-ovni-games/src/test.ts",
+            "tsConfig": "projects/ngx-mat-ovni-games/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-mat-ovni-games/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-mat-ovni-games/tsconfig.lib.json",
+              "projects/ngx-mat-ovni-games/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "js-dev-tools"

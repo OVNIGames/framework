@@ -4,19 +4,30 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
-    "declaration": false,
-    "module": "es2015",
+    "declaration": true,
+    "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
+      "es2015",
       "es2017",
       "dom",
       "esnext.asynciterable"
-    ]
+    ],
+    "paths": {
+      "ngx-mat-ovni-games": [
+        "dist/ngx-mat-ovni-games"
+      ],
+      "ngx-mat-ovni-games/*": [
+        "dist/ngx-mat-ovni-games/*"
+      ]
+    }
   }
 }
