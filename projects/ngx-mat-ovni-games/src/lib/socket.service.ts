@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
-import { environment } from '../environments/environment';
+import * as ioBase from 'socket.io-client';
+const io = (ioBase as any).default ? (ioBase as any).default : ioBase;
 
 export interface ExtendMessage<T> extends MessageEvent {
   action: 'extend';
@@ -48,16 +48,20 @@ export class SocketService {
     });
   }
 
-  connect(): Subject<MessageEvent> {
-    this.socket = io(environment.socket_uri, {
+  connect(socketUri: string = '', socketSecure: boolean = true): Subject<MessageEvent> {
+    if (this.socket) {
+      this.socket.close();
+    }
+
+    this.socket = io(socketUri, {
       path: '/socket.io',
       transports: ['websocket'],
-      secure: environment.socket_secure,
+      secure: socketSecure,
     });
 
-    window.onbeforeunload = () => {
+    window.addEventListener('beforeunload', () => {
       this.socket.close();
-    };
+    });
 
     const observable = new Observable(messenger => {
       this.socket.on('message', data => {

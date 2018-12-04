@@ -4,6 +4,7 @@ import { ExtendMessage, SocketService } from './socket.service';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
+import { HttpLink } from 'apollo-angular-link-http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,18 @@ import { ApolloQueryResult } from 'apollo-client';
 export class ApiService {
   protected extendCallbacks: Array<((message: ExtendMessage<any>) => void)> = [];
 
-  constructor(private apollo: Apollo, private socket: SocketService) {
+  constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
+  }
+
+  config(config) {
+    if (typeof config.graphql_uri !== 'undefined') {
+      this.apollo.getClient().link = this.httpLink.create({ uri: config.graphql_uri });
+    }
+    if (typeof config.socket_secure !== 'undefined' || typeof config.socket_uri !== 'undefined') {
+      const socketUri = config.socket_uri || '';
+      const socketSecure = typeof config.socket_secure === 'undefined' ? true : !!config.socket_secure;
+      this.socket.connect(socketUri, socketSecure);
+    }
   }
 
   getMessages() {

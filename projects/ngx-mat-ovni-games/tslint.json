@@ -10,7 +10,7 @@
     "component-selector": [
       true,
       "element",
-      "NgxMat",
+      "ngx-mat",
       "kebab-case"
     ]
   }

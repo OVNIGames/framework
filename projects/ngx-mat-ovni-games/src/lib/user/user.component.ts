@@ -3,16 +3,16 @@ import { UserService } from './user.service';
 import { User } from './user';
 
 @Component({
-  selector: 'og-user',
+  selector: 'ngx-mat-og-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
 export class UserComponent implements OnInit, OnChanges {
-  protected loading = false;
-  protected editing = false;
-  protected firstName = '';
-  protected lastName = '';
-  @Input() protected user: User;
+  public loading = false;
+  public editing = false;
+  public firstName = '';
+  public lastName = '';
+  @Input() public user: User;
   @Output() protected userLoggedOut: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private userService: UserService) {

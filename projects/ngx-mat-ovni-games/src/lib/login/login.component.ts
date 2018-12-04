@@ -11,7 +11,7 @@ let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+
 baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 
 @Component({
-  selector: 'og-login',
+  selector: 'ngx-mat-og-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })

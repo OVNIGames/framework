@@ -13,13 +13,13 @@ interface GamesListResultInterface {
 }
 
 @Component({
-  selector: 'og-games-list',
+  selector: 'ngx-mat-og-games-list',
   templateUrl: './games-list.component.html',
   styleUrls: ['./games-list.component.css'],
 })
 export class GamesListComponent implements OnInit {
-  protected list: GamesListInterface = null;
-  protected creating = false;
+  public list: GamesListInterface = null;
+  public creating = false;
 
   constructor(private api: ApiService) {
   }

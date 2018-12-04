@@ -16,16 +16,16 @@ export interface GameResultInterface {
 const languages: LanguageInterface[] = [];
 
 @Component({
-  selector: 'og-game-creator',
+  selector: 'ngx-mat-og-game-creator',
   templateUrl: './game-creator.component.html',
   styleUrls: ['./game-creator.component.css'],
 })
 export class GameCreatorComponent implements OnInit {
-  protected game: GameInterface = null;
-  protected name: string = '';
-  protected languages: LanguageInterface[] = languages;
-  protected defaultLanguageId: number = null;
-  protected submitting = false;
+  public game: GameInterface = null;
+  public name = '';
+  public languages: LanguageInterface[] = languages;
+  public defaultLanguageId: number = null;
+  public submitting = false;
 
   constructor(private api: ApiService) {
   }

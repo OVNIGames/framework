@@ -25,6 +25,9 @@
     "strictInjectionParameters": true,
     "enableResourceInlining": true
   },
+  "files": [
+    "src/test.ts"
+  ],
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts"
