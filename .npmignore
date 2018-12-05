@@ -1,5 +1,7 @@
 dist/js-dev-tools
 src
+documentation
+e2e
 tsconfig.json
 .editorconfig
 .prettierrc

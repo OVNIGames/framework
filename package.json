@@ -16,7 +16,11 @@
     "package": "npm run build-lib && npm run npm-pack",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "doc": "./node_modules/.bin/compodoc -p projects/ngx-mat-ovni-games/tsconfig.doc.json -n @ovnigames",
+    "patch-release": "npm version patch && npm publish && git push --follow-tags",
+    "minor-release": "npm version minor && npm publish && git push --follow-tags",
+    "major-release": "npm version major && npm publish && git push --follow-tags"
   },
   "dependencies": {
     "@angular/animations": "^7.1.1",
@@ -49,6 +53,7 @@
     "@angular/cli": "^7.0.7",
     "@angular/compiler-cli": "^7.1.1",
     "@angular/language-service": "^7.1.1",
+    "@compodoc/compodoc": "^1.1.7",
     "@types/jasmine": "^2.8.12",
     "@types/jasminewd2": "^2.0.6",
     "@types/node": "~8.9.4",
