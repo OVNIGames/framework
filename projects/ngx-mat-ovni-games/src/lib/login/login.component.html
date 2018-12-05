@@ -30,7 +30,7 @@
         <mat-spinner [diameter]="32"></mat-spinner>
       </div>
       <div *ngIf="!oAuthLoading">
-        <div class="or-separator">
+        <div class="or-separator" *ngIf="allowLogin">
           <hr>
           <div class="text">Or</div>
           <hr>
