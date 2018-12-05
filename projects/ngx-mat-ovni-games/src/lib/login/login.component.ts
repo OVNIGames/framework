@@ -10,31 +10,106 @@ import { DomSanitizer } from '@angular/platform-browser';
 let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
 baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 
+/**
+ * Allow the use to log in the application via dedicated credentials or OAuth (Facebook, Twitter, Google, etc.).
+ * <example-url>https://stackblitz.com/edit/angular-ag5xss?embed=1&file=app/card-overview-example.html</example-url>
+ *
+ * @example
+ * <ngx-mat-og-login></ngx-mat-og-login>
+ *
+ * @example
+ * <ngx-mat-og-login
+ *                [allowRemember]="true"
+ *                [allowLogin]="true"
+ *                [allowOAuth]="true"
+ *                [oAuthExclusion]="['facebook', 'twitter']"
+ *                [oAuthList]="['google', 'twitter', 'github']"
+ * ></ngx-mat-og-login>
+ */
 @Component({
   selector: 'ngx-mat-og-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
+  /**
+   * Enable [remember] checkbox to log the user automatically on next browsing session.
+   */
   @Input() allowRemember = true;
-  @Input() allowLogin = true;
-  @Input() allowOAuth = true;
-  @Input() oAuthExclusion: string[] = [];
-  @Input() oAuthList: null|string[] = null;
-  @Output() userLoggedIn: EventEmitter<User> = new EventEmitter<User>();
-  readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
-  readonly oauthErrorUrl = baseUrl + 'oauthError';
-  loading = true;
-  oAuthLoading = true;
-  remember = false;
-  email = new FormControl('', [Validators.required, Validators.email]);
-  password = new FormControl('', [Validators.required]);
-  oauth = new FormControl('');
-  oauthServices: OauthInterface[];
 
+  /**
+   * Enable credentials authentication.
+   */
+  @Input() public allowLogin = true;
+
+  /**
+   * Enable OAuth authentication (such as Facebook, Twitter, Google, LinkedIn, GitHub, Bitbucket).
+   */
+  @Input() public allowOAuth = true;
+
+  /**
+   * Array of OAuth service IDs to exclude from the buttons bar.
+   */
+  @Input() public oAuthExclusion: string[] = [];
+
+  /**
+   * Array of OAuth service IDs to include from the buttons bar (all possible included if null).
+   * This property also allow you to order buttons in your preferred way.
+   */
+  @Input() public oAuthList: null|string[] = null;
+
+  /**
+   * Event triggered with a user successfully logged in.
+   */
+  @Output() public userLoggedIn: EventEmitter<User> = new EventEmitter<User>();
+
+  /**
+   * @ignore
+   */
+  public loading = true;
+
+  /**
+   * @ignore
+   */
+  public oAuthLoading = true;
+
+  /**
+   * @ignore
+   */
+  public remember = false;
+
+  /**
+   * @ignore
+   */
+  public email = new FormControl('', [Validators.required, Validators.email]);
+
+  /**
+   * @ignore
+   */
+  public password = new FormControl('', [Validators.required]);
+
+  /**
+   * @ignore
+   */
+  public oauth = new FormControl('');
+
+  /**
+   * @ignore
+   */
+  public oauthServices: OauthInterface[];
+
+  private readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
+  private readonly oauthErrorUrl = baseUrl + 'oauthError';
+
+  /**
+   * @ignore
+   */
   constructor(private loginService: LoginService, private http: HttpClient, private sanitizer: DomSanitizer) {
   }
 
+  /**
+   * @ignore
+   */
   ngOnInit() {
     if (location.href.indexOf('oauthError') !== -1) {
       this.oauth.setErrors({oauthError: true});
@@ -79,6 +154,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * Trigger credentials login with form input data.
+   */
   login() {
     this.loading = true;
     this.loginService.login(this.email.value, this.password.value, this.remember).then((user: User | null) => {
@@ -95,10 +173,18 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * Send the logged in user event.
+   *
+   * @param user logged in user.
+   */
   auth(user: User) {
     this.userLoggedIn.emit(user);
   }
 
+  /**
+   * Returns the email address error message a string or empty string if valid.
+   */
   getEmailErrorMessage() {
     if (this.email.hasError('required')) {
       return 'You must enter a value';
@@ -112,6 +198,9 @@ export class LoginComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Returns the password error message a string or empty string if valid.
+   */
   getPasswordErrorMessage() {
     return this.password.hasError('required') ?
       'You must enter a value' :

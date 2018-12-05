@@ -1,0 +1,27 @@
+<div>
+  <label><input type="checkbox" [(ngModel)]="allowRemember"> Enable [remember] checkbox</label>
+</div>
+<div>
+  <label><input type="checkbox" [(ngModel)]="allowLogin"> Enable credentials authentication</label>
+</div>
+<div>
+  <label><input type="checkbox" [(ngModel)]="allowOAuth"> Enable OAuth authentication</label>
+</div>
+<div>
+  <label>
+    <select multiple [(ngModel)]="oAuthList">
+      <option value="google">Google</option>
+      <option value="facebook">Facebook</option>
+      <option value="twitter">Twitter</option>
+      <option value="linkedin">LinkedIn</option>
+      <option value="github">GitHub</option>
+      <option value="bitbucket">Bitbucket</option>
+    </select>
+  </label>
+</div>
+<ngx-mat-og-login
+  [allowRemember]="allowRemember"
+  [allowLogin]="allowLogin"
+  [allowOAuth]="allowOAuth"
+  [oAuthList]="oAuthList"
+></ngx-mat-og-login>

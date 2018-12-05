@@ -17,7 +17,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "doc": "./node_modules/.bin/compodoc -p projects/ngx-mat-ovni-games/tsconfig.doc.json -n @ovnigames",
+    "doc": "./node_modules/.bin/compodoc -p projects/ngx-mat-ovni-games/tsconfig.doc.json -n @ovnigames --disablePrivate",
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
     "minor-release": "npm version minor && npm publish && git push --follow-tags",
     "major-release": "npm version major && npm publish && git push --follow-tags"
