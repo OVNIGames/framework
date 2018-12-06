@@ -1,4 +1,4 @@
-# JsDevTools
+# OVNIGames Framework
 
 Get an app with login, register, OAuth, instant multi-users communication ready in
 seconds.
@@ -14,7 +14,7 @@ Then create a new project:
 ```shell
 ovni new MyApp
 cd MyApp
-ng serve --open
+npm run start
 ```
 
 You app is up and running locally.
