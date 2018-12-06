@@ -1,11 +1,9 @@
 {
-  "name": "@ovnigames/js-dev-tools",
+  "name": "@ovnigames/framework",
   "version": "0.0.1",
-  "description": "Development tools for front-size components for the OVNIGames framework",
+  "description": "Front-side components of the OVNIGames framework",
   "author": "kylekatarnls",
   "license": "MIT",
-  "main": "dist/out-tsc/index.js",
-  "types": "dist/out-tsc/index.d.ts",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --proxy-config=proxy.prod.conf.js --port=1138",
