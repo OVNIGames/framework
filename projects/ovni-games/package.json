@@ -1,6 +1,13 @@
 {
-  "name": "ovni-games",
+  "name": "@ovnigames/framework",
   "version": "0.0.1",
+  "description": "Front-side components of the OVNIGames framework",
+  "author": "kylekatarnls",
+  "license": "MIT",
+  "keywords": [
+    "Angular",
+    "Library"
+  ],
   "peerDependencies": {
     "@angular/common": "^7.0.0",
     "@angular/core": "^7.0.0",

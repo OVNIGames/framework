@@ -4,12 +4,16 @@
   "description": "Front-side components of the OVNIGames framework",
   "author": "kylekatarnls",
   "license": "MIT",
+  "keywords": [
+    "Angular",
+    "Library"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --proxy-config=proxy.prod.conf.js --port=1138",
     "start-local": "ng serve --open --proxy-config=proxy.conf.js --port=1138",
     "build": "ng build",
-    "build-lib": "ng build OvniGames",
+    "build-lib": "ng build OvniGames && copy .\\LICENSE .\\dist\\ovni-games && copy .\\README.md .\\dist\\ovni-games",
     "npm-pack": "cd dist/ovni-games && npm pack",
     "package": "npm run build-lib && npm run npm-pack",
     "test": "ng test",
