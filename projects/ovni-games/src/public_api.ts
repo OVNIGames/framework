@@ -1,10 +1,9 @@
 /*
- * Public API Surface of ngx-mat-ovni-games
+ * Public API Surface of ovni-games
  */
 
-export * from './lib/ngx-mat-ovni-games.service';
-export * from './lib/ngx-mat-ovni-games.component';
-export * from './lib/ngx-mat-ovni-games.module';
+export * from './lib/ovni-games.service';
+export * from './lib/ovni-games.module';
 export * from './lib/api.service';
 export * from './lib/graphql.module';
 export * from './lib/language.interface';

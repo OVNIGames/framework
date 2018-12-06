@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgxMatOvniGamesComponent } from './ngx-mat-ovni-games.component';
+import { OvniGamesComponent } from './ovni-games.component';
 
-describe('NgxMatOvniGamesComponent', () => {
-  let component: NgxMatOvniGamesComponent;
-  let fixture: ComponentFixture<NgxMatOvniGamesComponent>;
+describe('OvniGamesComponent', () => {
+  let component: OvniGamesComponent;
+  let fixture: ComponentFixture<OvniGamesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgxMatOvniGamesComponent ]
+      declarations: [ OvniGamesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NgxMatOvniGamesComponent);
+    fixture = TestBed.createComponent(OvniGamesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -16,7 +16,7 @@ export interface GameResultInterface {
 const languages: LanguageInterface[] = [];
 
 @Component({
-  selector: 'ngx-mat-og-game-creator',
+  selector: 'og-game-creator',
   templateUrl: './game-creator.component.html',
   styleUrls: ['./game-creator.component.css'],
 })

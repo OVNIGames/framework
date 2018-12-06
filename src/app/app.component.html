@@ -3,11 +3,11 @@
     <mat-spinner [diameter]="32"></mat-spinner>
   </div>
   <div *ngIf="!loading && user">
-    <ngx-mat-og-user [user]="user" (userLoggedOut)="user = null"></ngx-mat-og-user>
+    <og-user [user]="user" (userLoggedOut)="user = null"></og-user>
     <router-outlet></router-outlet>
   </div>
   <div *ngIf="!loading && !user">
-    <ngx-mat-og-login (userLoggedIn)="user = $event"></ngx-mat-og-login>
-    <ngx-mat-og-register (userRegistered)="user = $event"></ngx-mat-og-register>
+    <og-login (userLoggedIn)="user = $event"></og-login>
+    <og-register (userRegistered)="user = $event"></og-register>
   </div>
 </div>

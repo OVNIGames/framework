@@ -8,6 +8,9 @@
   <label><input type="checkbox" [(ngModel)]="allowOAuth"> Enable OAuth authentication</label>
 </div>
 <div>
+  <label><input type="checkbox" [(ngModel)]="flat"> Flatten the card style</label>
+</div>
+<div>
   <label>
     <select multiple [(ngModel)]="oAuthList">
       <option value="google">Google</option>
@@ -19,9 +22,10 @@
     </select>
   </label>
 </div>
-<ngx-mat-og-login
+<og-login
+  [flat]="flat"
   [allowRemember]="allowRemember"
   [allowLogin]="allowLogin"
   [allowOAuth]="allowOAuth"
   [oAuthList]="oAuthList"
-></ngx-mat-og-login>
+></og-login>

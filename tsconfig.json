@@ -22,11 +22,11 @@
       "esnext.asynciterable"
     ],
     "paths": {
-      "ngx-mat-ovni-games": [
-        "dist/ngx-mat-ovni-games"
+      "ovni-games": [
+        "dist/ovni-games"
       ],
-      "ngx-mat-ovni-games/*": [
-        "dist/ngx-mat-ovni-games/*"
+      "ovni-games/*": [
+        "dist/ovni-games/*"
       ]
     }
   }

@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card [ngClass]="{'hide-card': flat}">
   <div class="spinner-space" *ngIf="loading">
     <mat-spinner [diameter]="32"></mat-spinner>
   </div>

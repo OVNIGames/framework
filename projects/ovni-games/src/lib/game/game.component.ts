@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'ngx-mat-og-game',
+  selector: 'og-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css'],
 })

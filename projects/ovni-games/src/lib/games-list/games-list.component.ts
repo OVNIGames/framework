@@ -13,7 +13,7 @@ interface GamesListResultInterface {
 }
 
 @Component({
-  selector: 'ngx-mat-og-games-list',
+  selector: 'og-games-list',
   templateUrl: './games-list.component.html',
   styleUrls: ['./games-list.component.css'],
 })

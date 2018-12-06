@@ -5,7 +5,7 @@ import { RegisterResult, RegisterService } from './register.service';
 import { ApolloQueryResult } from 'apollo-client';
 
 @Component({
-  selector: 'ngx-mat-og-register',
+  selector: 'og-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })

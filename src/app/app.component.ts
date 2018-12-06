@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'apollo-client/util/Observable';
-import { UserInterface } from '../../projects/ngx-mat-ovni-games/src/lib/user/user.interface';
-import { ApiService } from '../../projects/ngx-mat-ovni-games/src/lib/api.service';
-import { UserService } from '../../projects/ngx-mat-ovni-games/src/lib/user/user.service';
-import { User } from '../../projects/ngx-mat-ovni-games/src/lib/user/user';
+import { UserInterface } from '../../projects/ovni-games/src/lib/user/user.interface';
+import { ApiService } from '../../projects/ovni-games/src/lib/api.service';
+import { UserService } from '../../projects/ovni-games/src/lib/user/user.service';
+import { User } from '../../projects/ovni-games/src/lib/user/user';
 import { environment } from '../environments/environment';
 
 @Component({

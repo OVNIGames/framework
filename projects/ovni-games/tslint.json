@@ -4,13 +4,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "NgxMat",
+      "Og",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "ngx-mat",
+      "og",
       "kebab-case"
     ]
   }

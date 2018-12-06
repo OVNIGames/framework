@@ -15,19 +15,19 @@ baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
  * <example-url>https://stackblitz.com/edit/angular-ag5xss?embed=1&file=app/card-overview-example.html</example-url>
  *
  * @example
- * <ngx-mat-og-login></ngx-mat-og-login>
+ * <og-login></og-login>
  *
  * @example
- * <ngx-mat-og-login
+ * <og-login
  *                [allowRemember]="true"
  *                [allowLogin]="true"
  *                [allowOAuth]="true"
  *                [oAuthExclusion]="['facebook', 'twitter']"
  *                [oAuthList]="['google', 'twitter', 'github']"
- * ></ngx-mat-og-login>
+ * ></og-login>
  */
 @Component({
-  selector: 'ngx-mat-og-login',
+  selector: 'og-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
   /**
    * Enable [remember] checkbox to log the user automatically on next browsing session.
    */
-  @Input() allowRemember = true;
+  @Input() public allowRemember = true;
 
   /**
    * Enable credentials authentication.
@@ -57,6 +57,11 @@ export class LoginComponent implements OnInit {
    * This property also allow you to order buttons in your preferred way.
    */
   @Input() public oAuthList: null|string[] = null;
+
+  /**
+   * Flatten the card design (no shadow, no padding, no margin on the main container).
+   */
+  @Input() public flat = false;
 
   /**
    * Event triggered with a user successfully logged in.

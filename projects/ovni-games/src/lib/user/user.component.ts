@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { User } from './user';
 
 @Component({
-  selector: 'ngx-mat-og-user',
+  selector: 'og-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
