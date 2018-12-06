@@ -1,4 +1,7 @@
-<div class="page">
+<div class="page" *ngIf="guestPage">
+  <router-outlet></router-outlet>
+</div>
+<div class="page" *ngIf="!guestPage">
   <div class="spinner-space" *ngIf="loading">
     <mat-spinner [diameter]="32"></mat-spinner>
   </div>

@@ -12,7 +12,7 @@ baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 
 /**
  * Allow the use to log in the application via dedicated credentials or OAuth (Facebook, Twitter, Google, etc.).
- * <example-url>https://stackblitz.com/edit/angular-ag5xss?embed=1&file=app/card-overview-example.html</example-url>
+ * <example-url>http://localhost:1139/doc/login/login-options</example-url>
  *
  * @example
  * <og-login></og-login>

@@ -19,7 +19,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "doc": "./node_modules/.bin/compodoc -p projects/ovni-games/tsconfig.doc.json -n @ovnigames --disablePrivate",
+    "build-doc": "./node_modules/.bin/compodoc -p projects/ovni-games/tsconfig.doc.json -n @ovnigames --disablePrivate",
+    "run-doc": "node doc.js",
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
     "minor-release": "npm version minor && npm publish && git push --follow-tags",
     "major-release": "npm version major && npm publish && git push --follow-tags"
@@ -43,8 +44,12 @@
     "apollo-client": "^2.4.7",
     "apollo-link": "^1.2.4",
     "core-js": "^2.5.4",
+    "express": "^4.16.4",
+    "express-http-proxy": "^1.5.0",
+    "glob": "^7.1.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.10.0",
+    "open": "0.0.5",
     "rxjs": "^6.3.3",
     "socket.io-client": "^2.2.0",
     "zone.js": "~0.8.26"

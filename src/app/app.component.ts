@@ -5,6 +5,7 @@ import { ApiService } from '../../projects/ovni-games/src/lib/api.service';
 import { UserService } from '../../projects/ovni-games/src/lib/user/user.service';
 import { User } from '../../projects/ovni-games/src/lib/user/user';
 import { environment } from '../environments/environment';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'og-root',
@@ -12,6 +13,7 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
+  guestPage: boolean;
   loading = true;
   user: UserInterface;
   commonTextWatched = false;
@@ -19,21 +21,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private querySubscription: Subscription;
 
-  constructor(private api: ApiService, private userService: UserService) {
+  constructor(private api: ApiService, private userService: UserService, private router: Router) {
     api.config(environment);
   }
 
-  updateWatcher() {
-    this.api.toggleWatching('commonText', this.commonTextWatched);
-  }
-
-  sendCommonText() {
-    this.api.sendMessage({
-      commonText: this.commonText,
-    });
-  }
-
   ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.guestPage = /^\/?doc(\/.*)?$/.test(this.router.url);
+      }
+    });
     this.api.getMessages().subscribe(msg => {
       if (msg['commonText']) {
         this.commonText = msg['commonText'];
@@ -47,5 +44,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.querySubscription.unsubscribe();
+  }
+
+  updateWatcher() {
+    this.api.toggleWatching('commonText', this.commonTextWatched);
+  }
+
+  sendCommonText() {
+    this.api.sendMessage({
+      commonText: this.commonText,
+    });
   }
 }

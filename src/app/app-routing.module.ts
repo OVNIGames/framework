@@ -6,6 +6,8 @@ const routes: Routes = [
   { path: '', redirectTo: '/games', pathMatch: 'full' },
   { path: 'play/:id/:code', loadChildren: './game/loader.module#GameLoaderModule' },
   { path: 'games', loadChildren: './games-list/loader.module#GamesListLoaderModule' },
+  { path: 'doc', loadChildren: './doc/loader.module#DocLoaderModule' },
+  { path: 'doc/:path/:name', loadChildren: './doc/loader.module#DocLoaderModule' },
 ];
 
 @NgModule({

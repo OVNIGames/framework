@@ -1,0 +1,19 @@
+<p *ngIf="error">
+  {{ error }}
+</p>
+<div *ngIf="!error && !currentFile">
+  <div *ngFor="let path of paths">
+    <strong>{{ path }}</strong>
+    <ul>
+      <li *ngFor="let name of names[path]">
+        <a mat-button [routerLink]="['/doc', path, name]" routerLinkActive="active">{{ name }}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div *ngIf="currentFile">
+  <a mat-button routerLink="/doc" routerLinkActive="active">Documentation menu</a>
+</div>
+<div class="live-demo" *ngIf="dynamicComponent && dynamicModule">
+  <ng-container *ngComponentOutlet="dynamicComponent; ngModuleFactory: dynamicModule;"></ng-container>
+</div>

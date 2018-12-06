@@ -1,28 +1,52 @@
-<div>
-  <label><input type="checkbox" [(ngModel)]="allowRemember"> Enable [remember] checkbox</label>
-</div>
-<div>
-  <label><input type="checkbox" [(ngModel)]="allowLogin"> Enable credentials authentication</label>
-</div>
-<div>
-  <label><input type="checkbox" [(ngModel)]="allowOAuth"> Enable OAuth authentication</label>
-</div>
-<div>
-  <label><input type="checkbox" [(ngModel)]="flat"> Flatten the card style</label>
-</div>
-<div>
-  <label>
-    <select multiple [(ngModel)]="oAuthList">
-      <option value="google">Google</option>
-      <option value="facebook">Facebook</option>
-      <option value="twitter">Twitter</option>
-      <option value="linkedin">LinkedIn</option>
-      <option value="github">GitHub</option>
-      <option value="bitbucket">Bitbucket</option>
-    </select>
-  </label>
-</div>
+<script>
+  this.allowRemember = true;
+  this.allowLogin = true;
+  this.allowOAuth = true;
+  this.flat = false;
+  this.oAuthList = [
+    'google',
+    'facebook',
+    'twitter',
+    'linkedin',
+    'github',
+    'bitbucket',
+  ];
+  this.shown = true;
+  this.refresh = () => {
+    this.shown = false;
+    setTimeout(() => {
+      this.shown = true;
+    });
+  }
+</script>
+<mat-card>
+  <h4>Options</h4>
+  <div>
+    <mat-checkbox [(ngModel)]="allowRemember"> Enable [remember] checkbox</mat-checkbox>
+  </div>
+  <div>
+    <mat-checkbox [(ngModel)]="allowLogin"> Enable credentials authentication</mat-checkbox>
+  </div>
+  <div>
+    <mat-checkbox [(ngModel)]="allowOAuth"> Enable OAuth authentication</mat-checkbox>
+  </div>
+  <div>
+    <mat-checkbox [(ngModel)]="flat"> Flatten the card style</mat-checkbox>
+  </div>
+  <h4>Services</h4>
+  <div>
+    <mat-select [multiple]="true" [(ngModel)]="oAuthList" style="width: 100%;" (selectionChange)="refresh()">
+      <mat-option value="google">Google</mat-option>
+      <mat-option value="facebook">Facebook</mat-option>
+      <mat-option value="twitter">Twitter</mat-option>
+      <mat-option value="linkedin">LinkedIn</mat-option>
+      <mat-option value="github">GitHub</mat-option>
+      <mat-option value="bitbucket">Bitbucket</mat-option>
+    </mat-select>
+  </div>
+</mat-card>
 <og-login
+  *ngIf="shown"
   [flat]="flat"
   [allowRemember]="allowRemember"
   [allowLogin]="allowLogin"
