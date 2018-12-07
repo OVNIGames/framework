@@ -12,7 +12,9 @@ baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
 
 /**
  * Allow the use to log in the application via dedicated credentials or OAuth (Facebook, Twitter, Google, etc.).
- * <example-url>http://localhost:1139/doc/login/login-options</example-url>
+ * <example-url>/doc/login/login-options?no-menu</example-url>
+ *
+ * @link https://ovnigames.selfbuild.fr/documentation/components/LoginComponent.html
  *
  * @example
  * <og-login></og-login>

@@ -33,6 +33,7 @@ interface TemplateResponse {
   styleUrls: ['./doc.component.css'],
 })
 export class DocComponent implements OnInit {
+  public menu = true;
   public error = '';
   public paths: string[] = [];
   public names: {
@@ -87,7 +88,9 @@ export class DocComponent implements OnInit {
   }
 
   refreshCurrentFile() {
-    this.currentFile = /^\/?doc\/([^\/]*)\/([^\/]*)$/.test(this.router.url)
+    const parts = this.router.url.split('?');
+    this.menu = parts[1].split(/[=&]/g).indexOf('no-menu') === -1;
+    this.currentFile = /^\/?doc\/([^\/]*)\/([^\/]*)$/.test(parts[0])
       ? {
         path: RegExp.$1,
         name: RegExp.$2,

@@ -6,6 +6,8 @@ const glob = require('glob');
 const app = express();
 const port = 1139;
 
+app.use('/documentation', express.static('documentation'));
+
 app.get('/api', (request, response) => {
   glob('projects/**/examples/**.html', (error, files) => {
     response.send({

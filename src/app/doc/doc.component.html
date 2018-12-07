@@ -1,7 +1,7 @@
 <p *ngIf="error">
   {{ error }}
 </p>
-<div *ngIf="!error && !currentFile">
+<div *ngIf="menu && !error && !currentFile">
   <div *ngFor="let path of paths">
     <strong>{{ path }}</strong>
     <ul>
@@ -11,7 +11,7 @@
     </ul>
   </div>
 </div>
-<div *ngIf="currentFile">
+<div *ngIf="menu && currentFile">
   <a mat-button routerLink="/doc" routerLinkActive="active">Documentation menu</a>
 </div>
 <div class="live-demo" *ngIf="dynamicComponent && dynamicModule">
