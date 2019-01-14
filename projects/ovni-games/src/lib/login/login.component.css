@@ -20,6 +20,11 @@ mat-card {
   margin: 20px auto;
 }
 
+form {
+  max-width: 320px;
+  margin: auto;
+}
+
 .hide-card {
   box-shadow: none;
   padding: 0;

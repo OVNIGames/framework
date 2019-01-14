@@ -33,6 +33,8 @@ mat-checkbox {
   margin: 0 auto;
 }
 
+form,
 .introduction {
-  margin-top: 0;
+  margin: 0 auto;
+  max-width: 320px;
 }
