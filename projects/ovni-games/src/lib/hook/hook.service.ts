@@ -1,5 +1,5 @@
 import { ComponentFactory, ComponentFactoryResolver, Injectable, TemplateRef, ViewContainerRef } from '@angular/core';
-import { HookableComponent } from 'nwa-uikit-web';
+import { HookableComponent } from './hookable.component';
 
 @Injectable({
   providedIn: 'root',
