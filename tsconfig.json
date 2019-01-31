@@ -20,14 +20,6 @@
       "es2017",
       "dom",
       "esnext.asynciterable"
-    ],
-    "paths": {
-      "ovni-games": [
-        "dist/ovni-games"
-      ],
-      "ovni-games/*": [
-        "dist/ovni-games/*"
-      ]
-    }
+    ]
   }
 }
