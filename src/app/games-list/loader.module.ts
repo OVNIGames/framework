@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { GamesListComponent, GamesListModule } from 'ovni-games';
+import { GamesListComponent, GamesListModule } from '@ovnigames/framework';
 
 @NgModule({
   imports: [

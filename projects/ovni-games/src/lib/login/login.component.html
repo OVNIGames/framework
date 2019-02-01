@@ -13,16 +13,16 @@
       </div>
       <div>
         <mat-form-field>
-          <mat-label>Password</mat-label>
+          <mat-label i18n>Password</mat-label>
           <input type="password" matInput [formControl]="password" required>
           <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
         </mat-form-field>
       </div>
       <div *ngIf="allowRemember">
-        <mat-checkbox [(ngModel)]="remember" [ngModelOptions]="{standalone: true}">Remember me</mat-checkbox>
+        <mat-checkbox [(ngModel)]="remember" [ngModelOptions]="{standalone: true}" i18n>Remember me</mat-checkbox>
       </div>
       <div>
-        <button type="submit" mat-flat-button color="primary">Login</button>
+        <button type="submit" mat-flat-button color="primary" i18n>Login</button>
       </div>
     </form>
     <div *ngIf="allowOAuth">
@@ -32,7 +32,7 @@
       <div *ngIf="!oAuthLoading">
         <div class="or-separator" *ngIf="allowLogin">
           <hr>
-          <div class="text">Or</div>
+          <div class="text" i18n>Or</div>
           <hr>
         </div>
         <div class="oauth-bar">
@@ -41,7 +41,7 @@
             <span class="svg" [innerHTML]="service.svg"></span>
           </a>
         </div>
-        <mat-error class="connexion-error" *ngIf="oauth.invalid">
+        <mat-error class="connexion-error" *ngIf="oauth.invalid" i18n>
           Connexion failed or aborted.
         </mat-error>
       </div>

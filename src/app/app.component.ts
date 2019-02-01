@@ -1,14 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'apollo-client/util/Observable';
-import { UserInterface } from '../../projects/ovni-games/src/lib/user/user.interface';
-import { ApiService } from '../../projects/ovni-games/src/lib/api.service';
-import { UserService } from '../../projects/ovni-games/src/lib/user/user.service';
-import { User } from '../../projects/ovni-games/src/lib/user/user';
+import { ApiService, UserInterface, UserService, User } from '@ovnigames/framework';
 import { environment } from '../environments/environment';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
-  selector: 'og-root',
+  selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })

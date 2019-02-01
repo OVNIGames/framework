@@ -2,16 +2,19 @@
   <mat-spinner [diameter]="32" *ngIf="!this.list"></mat-spinner>
   <div *ngIf="this.list">
     <mat-card>
-      <p>{{ list.count }} games are being created. Try our favorites:</p>
+      <p>
+        <span i18n>{list.count, plural, =0 {0 games are being created} =1 {1 game is being created} other {{{list.count}} games are being created}}.</span>
+        <span i18n>Try our favorites:</span>
+      </p>
       <button *ngFor="let game of list.top" mat-flat-button color="primary" class="play"
               routerLink="/play/{{ game.id }}/{{ game.code }}" routerLinkActive="active-link">
         {{ game.name }}
-        <small>by {{ game.owner.name }}</small>
+        <small i18n>by {{ game.owner.name }}</small>
       </button>
     </mat-card>
     <mat-card *ngIf="!creating">
-      <p>Or create your own game now!</p>
-      <button mat-flat-button color="primary" (click)="create()">Create a new game</button>
+      <p i18n>Or create your own game now!</p>
+      <button mat-flat-button color="primary" (click)="create()" i18n>Create a new game</button>
     </mat-card>
     <mat-card *ngIf="creating">
       <og-game-creator></og-game-creator>
