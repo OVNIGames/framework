@@ -1,34 +1,28 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game/game.interface';
 import { Observable, Observer } from 'rxjs';
 import { ExtendMessage } from '../socket.service';
 
-export interface GamesListInterface {
-  top: GameInterface[];
-  count: number;
-  room: string;
-}
 
-export interface GamesListResultInterface {
-  gamesList: GamesListInterface;
+export interface GamesResultInterface {
+  game: GameInterface;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class GameListService {
-  protected list: GamesListInterface = null;
+export class GameService {
+  protected list: GameInterface = null;
 
   constructor(private api: ApiService) {
-    api.onRoomExtend(this.list.room, (message: ExtendMessage<GamesListInterface>) => {
+    api.onRoomExtend(this.list.room, (message: ExtendMessage<GameInterface>) => {
       (<any> Object).assign(this.list, message.properties);
     });
   }
 
   get() {
-    return new Observable((gamesListSubscription: Observer<GamesListInterface>) => {
+    return new Observable((gamesListSubscription: Observer<GameInterface>) => {
       if (this.list) {
         gamesListSubscription.next(this.list);
 
