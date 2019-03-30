@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { User } from './user';
-import { ApiService } from '../api.service';
+import { ApiParameters, ApiService } from '../api.service';
 import { Observable, Observer, Subject } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
 import { UserInterface, UsersQueryInterface } from './user.interface';
 import { LoginResultInterface } from '../login/login.service';
 import { ExtendMessage } from '../socket.service';
+import { AnonymousSubject } from 'rxjs/internal-compatibility';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  protected currentUser: User;
+  protected currentUser: User | null = null;
   protected usersByRoom: {[room: string]: User} = {};
   protected usersById: {[id: number]: User} = {};
   protected usersByEmail: {[email: string]: User} = {};
@@ -29,9 +30,11 @@ export class UserService {
   constructor(private api: ApiService) {
     api.onExtend<UserInterface>((message: ExtendMessage<UserInterface>) => {
       const user = this.getRegisteredUser({room: message.room});
+
       if (user) {
         user.extend(message.properties);
         const subscription = user.getSubscription();
+
         if (subscription) {
           subscription.next(user);
         }
@@ -43,6 +46,7 @@ export class UserService {
     if (this.currentUser.room) {
       this.api.leave(this.currentUser.room);
     }
+
     this.currentUser = null;
   }
 
@@ -59,10 +63,10 @@ export class UserService {
           return;
         }
 
-        const user = new User(result.data.login, null, (properties: UserInterface) => {
-          properties.id = user.id;
+        const user = new User(result.data.login, undefined, (properties: UserInterface) => {
+          properties.id = user!.id;
           this.api.mutate<{updateUser: UserInterface}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: UserInterface}>) => {
-            user.updated_at = updateResult.data.updateUser.updated_at;
+            user.updated_at = updateResult.data.updateUser!.updated_at;
           });
         });
         this.registerUser(user, true);
@@ -132,9 +136,9 @@ export class UserService {
     return null;
   }
 
-  get(parameters: object): Subject<User> {
+  get(parameters: ApiParameters): Subject<User | null> {
     let user: User;
-    const observable = new Observable((userSubscription: Observer<User>) => {
+    const observable = new Observable((userSubscription: Observer<User | null>) => {
       const registeredUser = this.getRegisteredUser(parameters);
       if (registeredUser) {
         userSubscription.next(registeredUser);
@@ -148,18 +152,18 @@ export class UserService {
           return;
         }
         user = new User(result.data.users.data[0], userSubscription, (properties: UserInterface) => {
-          properties.id = user.id;
+          properties.id = user!.id;
           this.api.mutate<{updateUser: UserInterface}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: UserInterface}>) => {
-            user.updated_at = updateResult.data.updateUser.updated_at;
+            user.updated_at = updateResult.data.updateUser!.updated_at;
           });
         });
-        this.registerUser(user, parameters['current']);
+        this.registerUser(user, !!parameters['current']);
         userSubscription.next(user);
       });
     });
 
     const observer = {
-      next: (updateUser: User) => {
+      next: (updateUser: User | null) => {
         if (user) {
           let touched = false;
           const properties = {};
@@ -174,9 +178,11 @@ export class UserService {
           }
         }
       },
+      error: () => {},
+      complete: () => {},
     };
 
-    return Subject.create(observer, observable);
+    return new AnonymousSubject(observer, observable);
   }
 
   getCurrent(): Subject<User | null> {

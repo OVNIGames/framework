@@ -3,22 +3,16 @@ import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
 import { Observable, Observer } from 'rxjs';
 import { ExtendMessage } from '../socket.service';
-
-
-export interface GamesResultInterface {
-  game: GameInterface;
-}
+import { GameInterface } from './game.interface';
+import { GamesListResultInterface } from '../..';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
-  protected list: GameInterface = null;
+  protected list: GameInterface | null = null;
 
   constructor(private api: ApiService) {
-    api.onRoomExtend(this.list.room, (message: ExtendMessage<GameInterface>) => {
-      (<any> Object).assign(this.list, message.properties);
-    });
   }
 
   get() {
@@ -40,8 +34,14 @@ export class GameService {
         count
         room
       `).subscribe((result: ApolloQueryResult<GamesListResultInterface>) => {
-        gamesListSubscription.next(this.list = result.data.gamesList);
-        this.api.join(this.list.room);
+        gamesListSubscription.next(this.list = result.data.gamesList[0]);
+
+        if (this.list && this.list.room) {
+          this.api.join(this.list.room);
+          this.api.onRoomExtend(this.list.room, (message: ExtendMessage<GameInterface>) => {
+            (<any> Object).assign(this.list, message.properties);
+          });
+        }
       });
     });
   }

@@ -21,10 +21,10 @@ const languages: LanguageInterface[] = [];
   styleUrls: ['./game-creator.component.css'],
 })
 export class GameCreatorComponent implements OnInit {
-  public game: GameInterface = null;
+  public game: GameInterface | null = null;
   public name = '';
   public languages: LanguageInterface[] = languages;
-  public defaultLanguageId: number = null;
+  public defaultLanguageId: number | null = null;
   public submitting = false;
 
   constructor(private api: ApiService) {

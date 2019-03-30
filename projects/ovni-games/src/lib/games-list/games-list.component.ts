@@ -18,14 +18,14 @@ interface GamesListResultInterface {
   styleUrls: ['./games-list.component.css'],
 })
 export class GamesListComponent implements OnInit {
-  public list: GamesListInterface = null;
+  public list: GamesListInterface | null = null;
   public creating = false;
 
   constructor(private api: ApiService) {
   }
 
   ngOnInit() {
-    this.api.query('gamesList', null, null, `
+    this.api.query('gamesList', undefined, undefined, `
       top {
         id
         code

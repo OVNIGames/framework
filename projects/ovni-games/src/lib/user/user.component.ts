@@ -22,8 +22,8 @@ export class UserComponent implements OnInit, OnChanges {
     this.userService.getCurrent().subscribe((user: User) => {
       user.getObservable().subscribe((user: User) => {
         this.user = user;
-        this.firstName = user.firstname;
-        this.lastName = user.lastname;
+        this.firstName = user.firstname || '';
+        this.lastName = user.lastname || '';
       });
     });
   }

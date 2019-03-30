@@ -6,6 +6,10 @@ import { Observable } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
 import { HttpLink } from 'apollo-angular-link-http';
 
+export interface ApiParameters {
+  [key: string]: string | number | boolean | null;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -46,7 +50,7 @@ export class ApiService {
     this.socket.toggleWatching(room, watching);
   }
 
-  query<T>(name: string, parameters?: object, returnedDataFields?: string | string[], returnedExtraFields?: string | string[]): Observable<ApolloQueryResult<T>> {
+  query<T>(name: string, parameters?: ApiParameters, returnedDataFields?: string | string[], returnedExtraFields?: string | string[]): Observable<ApolloQueryResult<T>> {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';

@@ -19,12 +19,9 @@ export interface GamesListResultInterface {
   providedIn: 'root'
 })
 export class GameListService {
-  protected list: GamesListInterface = null;
+  protected list: GamesListInterface | null = null;
 
   constructor(private api: ApiService) {
-    api.onRoomExtend(this.list.room, (message: ExtendMessage<GamesListInterface>) => {
-      (<any> Object).assign(this.list, message.properties);
-    });
   }
 
   get() {
@@ -48,6 +45,9 @@ export class GameListService {
       `).subscribe((result: ApolloQueryResult<GamesListResultInterface>) => {
         gamesListSubscription.next(this.list = result.data.gamesList);
         this.api.join(this.list.room);
+        this.api.onRoomExtend(this.list.room, (message: ExtendMessage<GamesListInterface>) => {
+          (<any> Object).assign(this.list, message.properties);
+        });
       });
     });
   }

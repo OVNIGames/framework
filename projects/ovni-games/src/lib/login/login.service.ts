@@ -19,6 +19,6 @@ export class LoginService {
   }
 
   getOauthService() {
-    return this.api.query('oauth', null, 'code,name,login,callback,redirect,color,icon');
+    return this.api.query('oauth', undefined, 'code,name,login,callback,redirect,color,icon');
   }
 }

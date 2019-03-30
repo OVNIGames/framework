@@ -34,7 +34,7 @@ export class User implements UserInterface {
   constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void) {
     this.assign(properties);
 
-    this.observable = Observable.create(messenger => {
+    this.observable = new Observable<User>(messenger => {
       this.observableCallback = () => {
         messenger.next(this);
       };
@@ -78,7 +78,7 @@ export class User implements UserInterface {
   }
 
   kill() {
-    this.subscription = null;
+    delete this.subscription;
 
     return this;
   }

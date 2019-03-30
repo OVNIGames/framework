@@ -40,13 +40,13 @@ export class RegisterComponent implements OnInit {
     this.registerService.register(
       this.email.value,
       this.password.value,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
       true,
       this.remember
     ).subscribe((result: ApolloQueryResult<RegisterResult>) => {
