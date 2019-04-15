@@ -32,7 +32,7 @@ export class GameListService {
         return;
       }
 
-      this.api.query('gamesList', null, null, `
+      this.api.query('gamesList', undefined, undefined, `
         top {
           id
           name

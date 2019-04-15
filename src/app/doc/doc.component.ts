@@ -44,13 +44,13 @@ export class DocComponent implements OnInit {
       [name: string]: string,
     },
   } = {};
-  public currentFile: {
+  public currentFile: null | {
     path: string,
     name: string,
   } = null;
   public currentFilePath = '';
   public dynamicComponent: any;
-  public dynamicModule: NgModuleFactory<any>;
+  public dynamicModule: null | NgModuleFactory<any>;
 
   constructor(private http: HttpClient, private router: Router, private compiler: Compiler) {
   }
@@ -101,7 +101,7 @@ export class DocComponent implements OnInit {
       path: null,
       name: null,
     };
-    const currentFilePath = (this.files[file.path || ''] || {})[file.name || ''] || null;
+    const currentFilePath = (this.files[file.path || ''] || {})[file.name || ''] || '';
 
     if (this.currentFilePath !== currentFilePath) {
       this.currentFilePath = currentFilePath || '';
@@ -152,7 +152,7 @@ export class DocComponent implements OnInit {
   }
 
   private createNewComponent(template: string): any {
-    const scripts = [];
+    const scripts: string[] = [];
     template = template.replace(/<script>([\S\s]+)<\/script>/g, (all, script) => {
       scripts.push(script);
 

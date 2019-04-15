@@ -53,7 +53,7 @@ export class UserService {
   }
 
   invalidCurrentUser() {
-    if (this.currentUser.room) {
+    if (this.currentUser && this.currentUser.room) {
       this.api.leave(this.currentUser.room);
     }
 
@@ -174,7 +174,7 @@ export class UserService {
 
     const observer = {
       next: (updateUser: User | null) => {
-        if (user) {
+        if (user && updateUser) {
           let touched = false;
           const properties = {};
           Object.keys(updateUser).forEach(key => {

@@ -5,6 +5,8 @@ import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
 import { HttpLink } from 'apollo-angular-link-http';
+import { ApiServiceConfig } from './api.service.config';
+import { FetchResult } from 'apollo-link';
 
 export interface ApiParameters {
   [key: string]: string | number | boolean | null;
@@ -19,13 +21,13 @@ export class ApiService {
   constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
   }
 
-  config(config) {
+  config(config: ApiServiceConfig) {
     if (typeof config.graphql_uri !== 'undefined') {
       this.apollo.getClient().link = this.httpLink.create({ uri: config.graphql_uri });
     }
     if (typeof config.socket_secure !== 'undefined' || typeof config.socket_uri !== 'undefined') {
       const socketUri = config.socket_uri || '';
-      const socketSecure = typeof config.socket_secure === 'undefined' ? true : !!config.socket_secure;
+      const socketSecure = typeof config.socket_secure === 'undefined' ? true : config.socket_secure;
       this.socket.connect(socketUri, socketSecure);
     }
   }
@@ -70,7 +72,7 @@ export class ApiService {
     }).valueChanges;
   }
 
-  mutate<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<ApolloQueryResult<T>> {
+  mutate<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<FetchResult<T, Record<string, any>, Record<string, any>>> {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';

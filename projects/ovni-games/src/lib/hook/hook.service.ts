@@ -1,4 +1,11 @@
-import { ComponentFactory, ComponentFactoryResolver, Injectable, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+  ComponentFactory,
+  ComponentFactoryResolver,
+  Injectable,
+  TemplateRef,
+  Type,
+  ViewContainerRef,
+} from '@angular/core';
 import { HookableComponent } from './hookable.component';
 
 @Injectable({
@@ -13,7 +20,7 @@ export class HookService {
     };
   } = {};
 
-  storeComponent(element: string, child: string, priority: number, resolver: ComponentFactoryResolver, componentDeclaration) {
+  storeComponent(element: string, child: string, priority: number, resolver: ComponentFactoryResolver, componentDeclaration: Type<HookableComponent>) {
     this.store(element, child, priority,
       <ComponentFactory<HookableComponent>> resolver.resolveComponentFactory(componentDeclaration),
     );
@@ -40,7 +47,7 @@ export class HookService {
   }
 
   getTemplates(element: string, viewContainerRef: ViewContainerRef): TemplateRef<any>[] {
-    const templates = [];
+    const templates: TemplateRef<any>[] = [];
     if (this.hooks[element]) {
       Object.keys(this.hooks[element]).sort().forEach(priority => {
         templates.push(...Object.values(this.hooks[element][priority]).map(component => {

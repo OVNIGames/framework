@@ -13,6 +13,6 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = +this.route.snapshot.paramMap.get('id');
+    this.id = +(this.route.snapshot.paramMap.get('id') || 0);
   }
 }

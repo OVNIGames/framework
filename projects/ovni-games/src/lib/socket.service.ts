@@ -14,7 +14,7 @@ export interface ExtendMessage<T> extends MessageEvent {
 })
 export class SocketService {
   private readonly messages: Subject<MessageEvent>;
-  private socket;
+  private socket: SocketIOClient.Socket;
 
   constructor() {
     this.messages = this.connect();
@@ -64,7 +64,7 @@ export class SocketService {
     });
 
     const observable = new Observable(messenger => {
-      this.socket.on('message', data => {
+      this.socket.on('message', (data: MessageEvent) => {
         messenger.next(data);
       });
 

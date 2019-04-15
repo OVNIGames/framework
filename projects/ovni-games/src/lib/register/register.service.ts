@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { User } from '../user/user';
 import { ApolloQueryResult } from 'apollo-client/core/types';
 import { ApiService } from '../api.service';
-import { Observable } from 'rxjs/index';
+import { Observable } from 'rxjs';
+import { FetchResult } from 'apollo-link';
 
 export interface RegisterResult {
   register: User | null;
@@ -15,7 +16,7 @@ export class RegisterService {
   constructor(private api: ApiService) {
   }
 
-  register(email: string, password: string, firstname?: string, lastname?: string, language?: string, biography?: string, sex?: number | null, phone?: string, photo?: File, login?: boolean, remember?: boolean): Observable<ApolloQueryResult<RegisterResult>> {
+  register(email: string, password: string, firstname?: string, lastname?: string, language?: string, biography?: string, sex?: number | null, phone?: string, photo?: File, login?: boolean, remember?: boolean): Observable<FetchResult<RegisterResult, Record<string, any>, Record<string, any>>> {
     const parameters = {
       email,
       password,
