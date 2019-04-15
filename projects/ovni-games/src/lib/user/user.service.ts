@@ -16,7 +16,7 @@ export class UserService {
   protected usersByRoom: {[room: string]: User} = {};
   protected usersById: {[id: number]: User} = {};
   protected usersByEmail: {[email: string]: User} = {};
-  protected readonly userDataFields = `
+  protected userDataFields = `
     id
     firstname
     lastname
@@ -40,6 +40,16 @@ export class UserService {
         }
       }
     });
+  }
+
+  getUserDataFields(): string {
+    return this.userDataFields;
+  }
+
+  setUserDataFields(userDataFields: string) {
+    this.userDataFields = userDataFields +
+      (/(^|[\s,{}])id([\s,{}]|$)/.test(userDataFields) ? '' : '\nid') +
+      (/(^|[\s,{}])room([\s,{}]|$)/.test(userDataFields) ? '' : '\nroom');
   }
 
   invalidCurrentUser() {

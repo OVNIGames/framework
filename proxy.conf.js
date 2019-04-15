@@ -13,6 +13,15 @@ const PROXY_CONFIG = {};
   },
   {
     context: [
+      '/doc/*',
+    ],
+    target: 'http://localhost:1139',
+    secure: false,
+    logLevel: 'debug',
+    changeOrigin: true,
+  },
+  {
+    context: [
       '/socket.io/*',
     ],
     target: 'http://localhost:3042',
