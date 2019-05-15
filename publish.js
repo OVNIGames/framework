@@ -16,5 +16,5 @@ glob(__dirname + '/dist/ovni-games/ovnigames-framework-*.tgz', {}, (err, list) =
     return semver.lt(a, b) ? 1 : -1;
   });
 
-  child_process.execSync('npm publish', [list[0]]);
+  child_process.spawn('npm publish', [list[0]]);
 });
