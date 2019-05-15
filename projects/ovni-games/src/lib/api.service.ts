@@ -26,7 +26,7 @@ export class ApiService {
     if (typeof config.graphql_uri !== 'undefined') {
       this.apollo.getClient().link = this.httpLink.create({ uri: config.graphql_uri });
 
-      if (/^(https?:\/\/[^\/])(\/.*)?$/.test(config.graphql_uri)) {
+      if (/^(https?:\/\/[^\/]+)(\/.*)?$/.test(config.graphql_uri)) {
         this.assetPrefix = RegExp.$1;
       }
     }
