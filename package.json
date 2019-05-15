@@ -22,7 +22,7 @@
     "e2e": "ng e2e OvniGames",
     "build-doc": "./node_modules/.bin/compodoc -p projects/ovni-games/tsconfig.doc.json -n @ovnigames --disablePrivate",
     "run-doc": "node doc.js",
-    "sync-version": "node sync-version.js && git commit -m 'Synchronize version'",
+    "sync-version": "node sync-version.js && git add projects/ovni-games/package.json && git commit -m \"Synchronize version\"",
     "push-version": "git push --follow-tags && npm run sync-version && npm run package && npm run publish-current",
     "patch-release": "npm version patch && npm run push-version",
     "minor-release": "npm version minor && npm run push-version",
