@@ -6,6 +6,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { OauthInterface, OauthQueryInterface } from './oauth.interface';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ApiService } from '../api.service';
 
 let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
 baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
@@ -111,7 +112,7 @@ export class LoginComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private loginService: LoginService, private http: HttpClient, private sanitizer: DomSanitizer) {
+  constructor(private loginService: LoginService, private api: ApiService, private http: HttpClient, private sanitizer: DomSanitizer) {
   }
 
   /**
@@ -150,7 +151,7 @@ export class LoginComponent implements OnInit {
       }
       Promise.all(this.oauthServices.map(service => {
         return new Promise(resolve => {
-          this.http.get(service.icon, {responseType: 'text'}).subscribe((svgBody: string) => {
+          this.http.get((service.icon.charAt(0) === '/' ? this.api.getAssetPrefix() : '') + service.icon, {responseType: 'text'}).subscribe((svgBody: string) => {
             service.svg = this.sanitizer.bypassSecurityTrustHtml(svgBody);
             resolve();
           });

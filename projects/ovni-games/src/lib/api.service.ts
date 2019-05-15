@@ -16,6 +16,7 @@ export interface ApiParameters {
   providedIn: 'root',
 })
 export class ApiService {
+  protected assetPrefix = '';
   protected extendCallbacks: Array<((message: ExtendMessage<any>) => void)> = [];
 
   constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
@@ -24,12 +25,20 @@ export class ApiService {
   config(config: ApiServiceConfig) {
     if (typeof config.graphql_uri !== 'undefined') {
       this.apollo.getClient().link = this.httpLink.create({ uri: config.graphql_uri });
+
+      if (/^(https?:\/\/[^\/])(\/.*)?$/.test(config.graphql_uri)) {
+        this.assetPrefix = RegExp.$1;
+      }
     }
     if (typeof config.socket_secure !== 'undefined' || typeof config.socket_uri !== 'undefined') {
       const socketUri = config.socket_uri || '';
       const socketSecure = typeof config.socket_secure === 'undefined' ? true : config.socket_secure;
       this.socket.connect(socketUri, socketSecure);
     }
+  }
+
+  getAssetPrefix() {
+    return this.assetPrefix;
   }
 
   getMessages() {
