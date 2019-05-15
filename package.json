@@ -16,6 +16,7 @@
     "build-lib": "ng build OvniGames && copy .\\LICENSE .\\dist\\ovni-games && copy .\\README.md .\\dist\\ovni-games",
     "npm-pack": "cd dist/ovni-games && npm pack",
     "package": "npm run build-lib && npm run npm-pack",
+    "publish-current": "npm publish dist/ovni-games/ovnigames-framework-*.tgz",
     "test": "ng test OvniGames",
     "lint": "ng lint OvniGames",
     "e2e": "ng e2e OvniGames",
