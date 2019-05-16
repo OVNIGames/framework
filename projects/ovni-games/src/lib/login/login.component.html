@@ -36,7 +36,7 @@
           <hr>
         </div>
         <div class="oauth-bar">
-          <a *ngFor="let service of oauthServices" href="{{ service.login }}" title="{{ service.name }}"
+          <a *ngFor="let service of oauthServices" href="{{ loginHref(service.login) }}" title="{{ service.name }}"
              [style.background]="service.color" mat-flat-button>
             <span class="svg" [innerHTML]="service.svg"></span>
           </a>

@@ -162,6 +162,16 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  loginHref(href: string): string {
+    const prefix = this.api.getAssetPrefix();
+
+    if (href.charAt(0) === '/' && prefix) {
+      href = prefix + href + (href.indexOf('?') === -1 ? '?' : '&') + 'origin=' + encodeURIComponent(location.origin || location.protocol + '//' + location.host);
+    }
+
+    return href;
+  }
+
   /**
    * Trigger credentials login with form input data.
    */
