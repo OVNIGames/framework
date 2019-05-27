@@ -22,17 +22,22 @@ export class ApiService {
   constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
   }
 
-  config(config: ApiServiceConfig) {
+  config(config: ApiServiceConfig, overrideApolloClient: boolean = true) {
     if (typeof config.graphql_uri !== 'undefined') {
-      this.apollo.getClient().link = this.httpLink.create({
-        uri: config.graphql_uri,
-        withCredentials: config.with_credentials !== false,
-      });
+      const client = this.apollo.getClient();
+
+      if (overrideApolloClient && client) {
+        client.link = this.httpLink.create({
+          uri: config.graphql_uri,
+          withCredentials: config.with_credentials !== false,
+        });
+      }
 
       if (/^(https?:\/\/[^\/]+)(\/.*)?$/.test(config.graphql_uri)) {
         this.assetPrefix = RegExp.$1;
       }
     }
+
     if (typeof config.socket_secure !== 'undefined' || typeof config.socket_uri !== 'undefined') {
       const socketUri = config.socket_uri || '';
       const socketSecure = typeof config.socket_secure === 'undefined' ? true : config.socket_secure;
