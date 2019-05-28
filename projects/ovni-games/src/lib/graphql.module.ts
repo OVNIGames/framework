@@ -3,11 +3,11 @@ import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-export function createApollo(httpLink: HttpLink, graphqlUri: string = '/graphql') {
+export function createApollo(httpLink: HttpLink, graphqlUri: string = '/graphql', withCredentials: boolean = true) {
   return {
     link: httpLink.create({
       uri: graphqlUri,
-      withCredentials: true,
+      withCredentials,
     }),
     cache: new InMemoryCache(),
   };

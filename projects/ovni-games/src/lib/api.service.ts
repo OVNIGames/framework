@@ -3,10 +3,11 @@ import { Apollo } from 'apollo-angular';
 import { ExtendMessage, SocketService } from './socket.service';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
-import { ApolloQueryResult } from 'apollo-client';
+import ApolloClient, { ApolloQueryResult } from 'apollo-client';
 import { HttpLink } from 'apollo-angular-link-http';
 import { ApiServiceConfig } from './api.service.config';
 import { FetchResult } from 'apollo-link';
+import { createApollo } from './graphql.module';
 
 export interface ApiParameters {
   [key: string]: string | number | boolean | null;
@@ -26,7 +27,9 @@ export class ApiService {
     if (typeof config.graphql_uri !== 'undefined') {
       const client = this.apollo.getClient();
 
-      if (overrideApolloClient && client) {
+      if (!client) {
+        this.apollo.setClient(new ApolloClient(createApollo(this.httpLink, config.graphql_uri, config.with_credentials !== false)));
+      } else if (overrideApolloClient) {
         client.link = this.httpLink.create({
           uri: config.graphql_uri,
           withCredentials: config.with_credentials !== false,
