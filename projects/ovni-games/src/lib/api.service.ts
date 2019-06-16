@@ -23,7 +23,7 @@ export class ApiService {
   constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
   }
 
-  config(config: ApiServiceConfig, overrideApolloClient: boolean = true) {
+  config(config: ApiServiceConfig, overrideApolloClient: boolean = true): void {
     if (typeof config.graphql_uri !== 'undefined') {
       const client = this.apollo.getClient();
 
@@ -48,27 +48,27 @@ export class ApiService {
     }
   }
 
-  getAssetPrefix() {
+  getAssetPrefix(): string {
     return this.assetPrefix;
   }
 
-  getMessages() {
-    return this.socket.getMessages();
+  getMessages(): Observable<MessageEvent> {
+    return this.socket.getMessages().asObservable();
   }
 
-  sendMessage(message: Object) {
+  sendMessage(message: Object): void {
     this.socket.sendMessage(message);
   }
 
-  join(room: string) {
+  join(room: string): void {
     this.socket.join(room);
   }
 
-  leave(room: string) {
+  leave(room: string): void {
     this.socket.leave(room);
   }
 
-  toggleWatching(room: string, watching: boolean) {
+  toggleWatching(room: string, watching: boolean): void {
     this.socket.toggleWatching(room, watching);
   }
 

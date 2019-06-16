@@ -7,6 +7,7 @@ import { UserInterface, UsersQueryInterface } from './user.interface';
 import { LoginResultInterface } from '../login/login.service';
 import { ExtendMessage } from '../socket.service';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
+import { FetchResult } from 'apollo-link';
 
 @Injectable({
   providedIn: 'root',
@@ -85,7 +86,7 @@ export class UserService {
     });
   }
 
-  logout() {
+  logout(): Observable<FetchResult<{logout: boolean}, Record<string, any>, Record<string, any>>> {
     this.invalidCurrentUser();
 
     return this.api.mutate('logout');

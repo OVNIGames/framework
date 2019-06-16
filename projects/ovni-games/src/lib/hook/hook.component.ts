@@ -46,7 +46,7 @@ export class HookComponent {
     this.store();
   }
 
-  @ContentChild(TemplateRef) set content(template: TemplateRef<any>) {
+  @ContentChild(TemplateRef, {static: false}) set content(template: TemplateRef<any>) {
     this._template = template;
     this.store();
   }
