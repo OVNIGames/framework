@@ -73,7 +73,8 @@ export class ApiService {
   }
 
   query<T>(name: string, parameters?: ApiParameters, returnedDataFields?: string | string[], returnedExtraFields?: string | string[]): Observable<ApolloQueryResult<T>> {
-    const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
+    const keys = parameters ? Object.keys(parameters) : [];
+    const parametersString = parameters && keys.length ? `(${keys.map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';
     if (returnedDataFields && typeof returnedDataFields === 'object') {
