@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular-link-http';
 import ApolloClient, { ApolloQueryResult } from 'apollo-client';
-import { FetchResult } from 'apollo-link';
+import { ApolloLink, FetchResult } from 'apollo-link';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { IApiServiceConfig } from './api.service.config';
 import { createApollo } from './graphql.module';
 import { IExtendMessage, SocketService } from './socket.service';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 export interface IApiParameters {
   [key: string]: string | number | boolean | null;
@@ -19,21 +20,41 @@ export interface IApiParameters {
 export class ApiService {
   protected assetPrefix = '';
   protected extendCallbacks: Array<((message: IExtendMessage<object>) => void)> = [];
+  protected headers = new HttpHeaders();
 
   constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
+  }
+
+  protected getResponseInterceptor(): ApolloLink {
+    return new ApolloLink((op, forward: (op: any) => any) => {
+      return forward(op).map((data: object) => {
+        const context = op.getContext();
+        const response: HttpResponse<FetchResult> = context.response;
+        const token = response.headers.get('X-CSRF-TOKEN');
+
+        if (this.headers && token) {
+          this.headers.set('X-CSRF-TOKEN', token);
+        }
+
+        return data;
+      });
+    });
   }
 
   public config(config: IApiServiceConfig, overrideApolloClient: boolean = true): void {
     if (typeof config.graphql_uri !== 'undefined') {
       const client = this.apollo.getClient();
+      const headers = this.headers;
 
       if (!client) {
-        this.apollo.setClient(new ApolloClient(createApollo(this.httpLink, config.graphql_uri, config.with_credentials !== false)));
+        const clientConfig = createApollo(this.httpLink, config.graphql_uri, config.with_credentials !== false, this.getResponseInterceptor(), headers);
+        this.apollo.setClient(new ApolloClient(clientConfig));
       } else if (overrideApolloClient) {
-        client.link = this.httpLink.create({
+        client.link = this.getResponseInterceptor().concat(this.httpLink.create({
+          headers,
           uri: config.graphql_uri,
           withCredentials: config.with_credentials !== false,
-        });
+        }));
       }
 
       if (/^(https?:\/\/[^\/]+)(\/.*)?$/.test(config.graphql_uri)) {
@@ -82,9 +103,11 @@ export class ApiService {
     const parametersString = parameters && keys.length ? `(${keys.map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';
+
     if (returnedDataFields && typeof returnedDataFields === 'object') {
       returnedDataFields = returnedDataFields.join(',');
     }
+
     if (returnedExtraFields && typeof returnedExtraFields === 'object') {
       returnedExtraFields = returnedExtraFields.join(',');
     }

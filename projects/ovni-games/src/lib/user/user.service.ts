@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { User } from './user';
-import { IApiParameters, ApiService } from '../api.service';
-import { Observable, Observer, Subject } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
-import { IUser, IUsersQuery } from './user.interface';
+import { FetchResult } from 'apollo-link';
+import { Observable, Observer, Subject } from 'rxjs';
+import { AnonymousSubject } from 'rxjs/internal-compatibility';
+import { ApiService, IApiParameters } from '../api.service';
 import { ILoginResult } from '../login/login.service';
 import { IExtendMessage } from '../socket.service';
-import { AnonymousSubject } from 'rxjs/internal-compatibility';
-import { FetchResult } from 'apollo-link';
+import { User } from './user';
+import { IUser, IUsersQuery } from './user.interface';
 
 @Injectable({
   providedIn: 'root',
