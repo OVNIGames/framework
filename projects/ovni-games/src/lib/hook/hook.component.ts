@@ -1,10 +1,4 @@
-import {
-  Component,
-  ContentChild,
-  Input,
-  TemplateRef,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { HookService } from './hook.service';
 
@@ -26,7 +20,7 @@ import { HookService } from './hook.service';
   templateUrl: './hook.component.html',
 })
 export class HookComponent {
-  private _template: TemplateRef<any>;
+  private _template: TemplateRef<object>;
   private _element: string;
   private _child: string;
   private _priority: number;
@@ -46,7 +40,7 @@ export class HookComponent {
     this.store();
   }
 
-  @ContentChild(TemplateRef) set content(template: TemplateRef<any>) {
+  @ContentChild(TemplateRef, {static: false}) set content(template: TemplateRef<object>) {
     this._template = template;
     this.store();
   }
@@ -54,17 +48,17 @@ export class HookComponent {
   constructor(private hookService: HookService, private viewContainerRef: ViewContainerRef) {
   }
 
-  get template(): TemplateRef<any> {
+  get template(): TemplateRef<object> {
     return this._template;
   }
 
-  store() {
+  public store(): void {
     if (this._element && this._child) {
       this.hookService.store(this._element, this._child, this._priority, this._template);
     }
   }
 
-  get children(): TemplateRef<any>[] {
+  get children(): TemplateRef<object>[] {
     if (this._element && !this._child) {
       return this.hookService.getTemplates(this._element, this.viewContainerRef);
     }

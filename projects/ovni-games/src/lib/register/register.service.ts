@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { User } from '../user/user';
-import { ApolloQueryResult } from 'apollo-client/core/types';
-import { ApiService } from '../api.service';
-import { Observable } from 'rxjs';
 import { FetchResult } from 'apollo-link';
+import { Observable } from 'rxjs';
+import { ApiService } from '../api.service';
+import { User } from '../user/user';
 
-export interface RegisterResult {
+export interface IRegisterResult {
   register: User | null;
 }
 
@@ -16,7 +15,19 @@ export class RegisterService {
   constructor(private api: ApiService) {
   }
 
-  register(email: string, password: string, firstname?: string, lastname?: string, language?: string, biography?: string, sex?: number | null, phone?: string, photo?: File, login?: boolean, remember?: boolean): Observable<FetchResult<RegisterResult, Record<string, any>, Record<string, any>>> {
+  public register(
+    email: string,
+    password: string,
+    firstname?: string,
+    lastname?: string,
+    language?: string,
+    biography?: string,
+    sex?: number | null,
+    phone?: string,
+    photo?: File,
+    login?: boolean,
+    remember?: boolean
+  ): Observable<FetchResult<IRegisterResult, Record<string, object>, Record<string, object>>> {
     const parameters = {
       email,
       password,
@@ -30,12 +41,13 @@ export class RegisterService {
       login,
       remember,
     };
-    for (let key in parameters) {
+
+    for (const key in parameters) {
       if (parameters[key] === null) {
         delete parameters[key];
       }
     }
 
-    return this.api.mutate<RegisterResult>('register', parameters, 'id,name,email');
+    return this.api.mutate<IRegisterResult>('register', parameters, 'id,name,email');
   }
 }

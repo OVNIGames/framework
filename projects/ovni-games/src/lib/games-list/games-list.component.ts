@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game/game.interface';
+import { ApiService } from '../api.service';
+import { IGame } from '../game/game.interface';
 
-interface GamesListInterface {
-  top: GameInterface[];
+interface IGamesList {
+  top: IGame[];
   count: number;
 }
 
-interface GamesListResultInterface {
-  gamesList: GamesListInterface;
+interface IGamesListResult {
+  gamesList: IGamesList;
 }
 
 @Component({
@@ -18,13 +18,13 @@ interface GamesListResultInterface {
   styleUrls: ['./games-list.component.css'],
 })
 export class GamesListComponent implements OnInit {
-  public list: GamesListInterface | null = null;
+  public list: IGamesList | null = null;
   public creating = false;
 
   constructor(private api: ApiService) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.api.query('gamesList', undefined, undefined, `
       top {
         id
@@ -35,12 +35,12 @@ export class GamesListComponent implements OnInit {
         }
       }
       count
-    `).subscribe((result: ApolloQueryResult<GamesListResultInterface>) => {
+    `).subscribe((result: ApolloQueryResult<IGamesListResult>) => {
       this.list = result.data.gamesList;
     });
   }
 
-  create() {
+  public create(): void {
     this.creating = true;
   }
 }

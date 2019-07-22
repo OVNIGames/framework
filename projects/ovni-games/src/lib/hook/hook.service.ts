@@ -1,11 +1,4 @@
-import {
-  ComponentFactory,
-  ComponentFactoryResolver,
-  Injectable,
-  TemplateRef,
-  Type,
-  ViewContainerRef,
-} from '@angular/core';
+import { ComponentFactory, ComponentFactoryResolver, Injectable, TemplateRef, Type, ViewContainerRef } from '@angular/core';
 import { HookableComponent } from './hookable.component';
 
 @Injectable({
@@ -15,18 +8,29 @@ export class HookService {
   private hooks: {
     [element: string]: {
       [priority: number]: {
-        [child: string]: TemplateRef<any> | ComponentFactory<HookableComponent>;
+        [child: string]: TemplateRef<object> | ComponentFactory<HookableComponent>;
       };
     };
   } = {};
 
-  storeComponent(element: string, child: string, priority: number, resolver: ComponentFactoryResolver, componentDeclaration: Type<HookableComponent>) {
+  public storeComponent(
+    element: string,
+    child: string,
+    priority: number,
+    resolver: ComponentFactoryResolver,
+    componentDeclaration: Type<HookableComponent>
+  ): void {
     this.store(element, child, priority,
-      <ComponentFactory<HookableComponent>> resolver.resolveComponentFactory(componentDeclaration),
+      resolver.resolveComponentFactory(componentDeclaration),
     );
   }
 
-  store(element: string, child: string, priority: number, template: TemplateRef<any> | ComponentFactory<HookableComponent>) {
+  public store(
+    element: string,
+    child: string,
+    priority: number,
+    template: TemplateRef<object> | ComponentFactory<HookableComponent>
+  ): void {
     if (!this.hooks[element]) {
       this.hooks[element] = {};
     }
@@ -46,8 +50,9 @@ export class HookService {
     this.hooks[element][priority][child] = template;
   }
 
-  getTemplates(element: string, viewContainerRef: ViewContainerRef): TemplateRef<any>[] {
-    const templates: TemplateRef<any>[] = [];
+  public getTemplates(element: string, viewContainerRef: ViewContainerRef): TemplateRef<object>[] {
+    const templates: TemplateRef<object>[] = [];
+
     if (this.hooks[element]) {
       Object.keys(this.hooks[element]).sort().forEach(priority => {
         templates.push(...Object.values(this.hooks[element][priority]).map(component => {

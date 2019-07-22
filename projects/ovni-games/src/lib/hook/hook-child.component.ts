@@ -10,5 +10,5 @@ import { Component, Input, TemplateRef } from '@angular/core';
   `,
 })
 export class HookChildComponent {
-  @Input() templateRef: TemplateRef<Component>;
+  @Input() public templateRef: TemplateRef<Component>;
 }

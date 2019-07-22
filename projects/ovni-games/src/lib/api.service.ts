@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { ExtendMessage, SocketService } from './socket.service';
+import { HttpLink } from 'apollo-angular-link-http';
+import ApolloClient, { ApolloQueryResult } from 'apollo-client';
+import { FetchResult } from 'apollo-link';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
-import { ApolloQueryResult } from 'apollo-client';
-import { HttpLink } from 'apollo-angular-link-http';
-import { ApiServiceConfig } from './api.service.config';
-import { FetchResult } from 'apollo-link';
+import { IApiServiceConfig } from './api.service.config';
+import { createApollo } from './graphql.module';
+import { IExtendMessage, SocketService } from './socket.service';
 
-export interface ApiParameters {
+export interface IApiParameters {
   [key: string]: string | number | boolean | null;
 }
 
@@ -17,16 +18,18 @@ export interface ApiParameters {
 })
 export class ApiService {
   protected assetPrefix = '';
-  protected extendCallbacks: Array<((message: ExtendMessage<any>) => void)> = [];
+  protected extendCallbacks: Array<((message: IExtendMessage<object>) => void)> = [];
 
   constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
   }
 
-  config(config: ApiServiceConfig, overrideApolloClient: boolean = true) {
+  public config(config: IApiServiceConfig, overrideApolloClient: boolean = true): void {
     if (typeof config.graphql_uri !== 'undefined') {
       const client = this.apollo.getClient();
 
-      if (overrideApolloClient && client) {
+      if (!client) {
+        this.apollo.setClient(new ApolloClient(createApollo(this.httpLink, config.graphql_uri, config.with_credentials !== false)));
+      } else if (overrideApolloClient) {
         client.link = this.httpLink.create({
           uri: config.graphql_uri,
           withCredentials: config.with_credentials !== false,
@@ -45,32 +48,38 @@ export class ApiService {
     }
   }
 
-  getAssetPrefix() {
+  public getAssetPrefix(): string {
     return this.assetPrefix;
   }
 
-  getMessages() {
-    return this.socket.getMessages();
+  public getMessages(): Observable<MessageEvent> {
+    return this.socket.getMessages().asObservable();
   }
 
-  sendMessage(message: Object) {
+  public sendMessage(message: object): void {
     this.socket.sendMessage(message);
   }
 
-  join(room: string) {
+  public join(room: string): void {
     this.socket.join(room);
   }
 
-  leave(room: string) {
+  public leave(room: string): void {
     this.socket.leave(room);
   }
 
-  toggleWatching(room: string, watching: boolean) {
+  public toggleWatching(room: string, watching: boolean): void {
     this.socket.toggleWatching(room, watching);
   }
 
-  query<T>(name: string, parameters?: ApiParameters, returnedDataFields?: string | string[], returnedExtraFields?: string | string[]): Observable<ApolloQueryResult<T>> {
-    const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
+  public query<T>(
+    name: string,
+    parameters?: IApiParameters | null,
+    returnedDataFields?: string | string[] | null,
+    returnedExtraFields?: string | string[] | null,
+  ): Observable<ApolloQueryResult<T>> {
+    const keys = parameters ? Object.keys(parameters) : [];
+    const parametersString = parameters && keys.length ? `(${keys.map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';
     if (returnedDataFields && typeof returnedDataFields === 'object') {
@@ -89,11 +98,15 @@ export class ApiService {
     }).valueChanges;
   }
 
-  mutate<T>(name: string, parameters?: object, returnedFields?: string | string[]): Observable<FetchResult<T, Record<string, any>, Record<string, any>>> {
+  public mutate<T>(
+    name: string,
+    parameters?: object | IApiParameters | null,
+    returnedFields?: string | string[] | null,
+  ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
     }).join(', ')})` : '';
-    if (typeof returnedFields === 'object') {
+    if (returnedFields instanceof Array) {
       returnedFields = returnedFields.join(',');
     }
     returnedFields = returnedFields ? `{${returnedFields}}` : '';
@@ -107,12 +120,12 @@ export class ApiService {
     });
   }
 
-  onExtend<T>(callback: (message: ExtendMessage<T>) => void, room?: string) {
+  public onExtend<T>(callback: (message: IExtendMessage<T & object>) => void, room?: string): () => void {
     if (this.extendCallbacks.length) {
-      this.getMessages().subscribe((message: ExtendMessage<T>) => {
+      this.getMessages().subscribe((message: IExtendMessage<T & object>) => {
         if (message.action === 'extend' && (!room || room === message.room)) {
-          this.extendCallbacks.forEach(callback => {
-            callback(message);
+          this.extendCallbacks.forEach(extendCallback => {
+            extendCallback(message);
           });
         }
       });
@@ -125,7 +138,7 @@ export class ApiService {
     };
   }
 
-  onRoomExtend<T>(room: string, callback: (message: ExtendMessage<T>) => void) {
+  public onRoomExtend<T>(room: string, callback: (message: IExtendMessage<T>) => void): () => void {
     return this.onExtend(callback, room);
   }
 }
