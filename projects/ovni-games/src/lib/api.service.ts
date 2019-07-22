@@ -47,7 +47,7 @@ export class ApiService {
       const headers = this.headers;
 
       if (!client) {
-        const clientConfig = createApollo(this.httpLink, this.getResponseInterceptor(), headers, config.graphql_uri, config.with_credentials !== false);
+        const clientConfig = createApollo(this.httpLink, config.graphql_uri, config.with_credentials !== false, this.getResponseInterceptor(), headers);
         this.apollo.setClient(new ApolloClient(clientConfig));
       } else if (overrideApolloClient) {
         client.link = this.getResponseInterceptor().concat(this.httpLink.create({

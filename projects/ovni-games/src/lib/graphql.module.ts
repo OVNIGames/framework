@@ -10,13 +10,15 @@ export interface IGraphqlApolloConfig {
   cache: InMemoryCache;
 }
 
-export function createApollo(httpLink: HttpLink, link: ApolloLink, headers: HttpHeaders, graphqlUri: string = '/graphql', withCredentials: boolean = true): IGraphqlApolloConfig {
+export function createApollo(httpLink: HttpLink, graphqlUri: string = '/graphql', withCredentials: boolean = true, link?: ApolloLink, headers: HttpHeaders = new HttpHeaders()): IGraphqlApolloConfig {
+  const client = httpLink.create({
+    headers,
+    uri: graphqlUri,
+    withCredentials,
+  });
+
   return {
-    link: link.concat(httpLink.create({
-      headers,
-      uri: graphqlUri,
-      withCredentials,
-    })),
+    link: link ? link.concat(client) : client,
     cache: new InMemoryCache(),
   };
 }
