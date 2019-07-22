@@ -1,4 +1,4 @@
-export interface ApiServiceConfig {
+export interface IApiServiceConfig {
   production: boolean;
   socket_uri: string;
   socket_secure: boolean;

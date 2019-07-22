@@ -1,14 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GameCreatorComponent } from './game-creator.component';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatInputModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-} from '@angular/material';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatInputModule, MatProgressSpinnerModule, MatSelectModule } from '@angular/material';
+import { GameCreatorComponent } from './game-creator.component';
 
 @NgModule({
   imports: [

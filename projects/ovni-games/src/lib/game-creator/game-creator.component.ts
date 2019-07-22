@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { LanguageInterface } from '../language.interface';
-import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game/game.interface';
+import { ApiService } from '../api.service';
+import { IGame } from '../game/game.interface';
+import { ILanguage } from '../language.interface';
 
-interface LanguagesResultInterface {
+interface ILanguagesResult {
   languages: {
-    data: LanguageInterface[];
+    data: ILanguage[];
   };
 }
 
-export interface GameResultInterface {
-  createGame: GameInterface | null;
+export interface IGameResult {
+  createGame: IGame | null;
 }
-const languages: LanguageInterface[] = [];
+
+const languages: ILanguage[] = [];
 
 @Component({
   selector: 'og-game-creator',
@@ -21,26 +22,26 @@ const languages: LanguageInterface[] = [];
   styleUrls: ['./game-creator.component.css'],
 })
 export class GameCreatorComponent implements OnInit {
-  public game: GameInterface | null = null;
+  public game: IGame | null = null;
   public name = '';
-  public languages: LanguageInterface[] = languages;
+  public languages: ILanguage[] = languages;
   public defaultLanguageId: number | null = null;
   public submitting = false;
 
   constructor(private api: ApiService) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.api.query('languages', {
       page_size: 200,
-    }, 'id,code,name,native_name').subscribe((result: ApolloQueryResult<LanguagesResultInterface>) => {
+    }, 'id,code,name,native_name').subscribe((result: ApolloQueryResult<ILanguagesResult>) => {
       this.languages.push.apply(this.languages, result.data.languages.data);
     });
   }
 
-  create() {
+  public create(): void {
     this.submitting = true;
-    this.api.mutate<GameResultInterface>('createGame', {
+    this.api.mutate<IGameResult>('createGame', {
       name: this.name,
       default_language_id: this.defaultLanguageId,
     }, `
@@ -52,13 +53,13 @@ export class GameCreatorComponent implements OnInit {
         name
         native_name
       }
-    `).subscribe((result: ApolloQueryResult<GameResultInterface>) => {
+    `).subscribe((result: ApolloQueryResult<IGameResult>) => {
       this.submitting = false;
       this.game = result.data.createGame;
     });
   }
 
-  dump() {
+  public dump(): string {
     return JSON.stringify(this.game, null, 2);
   }
 }

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UserInterface } from '../user/user.interface';
 import { FormControl, Validators } from '@angular/forms';
-import { RegisterResult, RegisterService } from './register.service';
 import { ApolloQueryResult } from 'apollo-client';
+import { IUser } from '../user/user.interface';
+import { IRegisterResult, RegisterService } from './register.service';
 
 @Component({
   selector: 'og-register',
@@ -10,18 +10,18 @@ import { ApolloQueryResult } from 'apollo-client';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
-  @Input() allowRemember = true;
-  @Output() userRegistered: EventEmitter<UserInterface> = new EventEmitter<UserInterface>();
-  loading = false;
-  remember = false;
-  email = new FormControl('', [Validators.required, Validators.email]);
-  password = new FormControl('', [Validators.required]);
-  passwordConfirmation = new FormControl('', [Validators.required]);
+  @Input() public allowRemember = true;
+  @Output() public userRegistered: EventEmitter<IUser> = new EventEmitter<IUser>();
+  public loading = false;
+  public remember = false;
+  public email = new FormControl('', [Validators.required, Validators.email]);
+  public password = new FormControl('', [Validators.required]);
+  public passwordConfirmation = new FormControl('', [Validators.required]);
 
   constructor(private registerService: RegisterService) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.passwordConfirmation.valueChanges.subscribe(() => {
       if (this.passwordConfirmation.dirty && this.password.dirty && this.passwordConfirmation.value !== this.password.value) {
         this.passwordConfirmation.setErrors({
@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  register() {
+  public register(): void {
     this.loading = true;
     this.registerService.register(
       this.email.value,
@@ -49,7 +49,7 @@ export class RegisterComponent implements OnInit {
       undefined,
       true,
       this.remember
-    ).subscribe((result: ApolloQueryResult<RegisterResult>) => {
+    ).subscribe((result: ApolloQueryResult<IRegisterResult>) => {
       this.loading = false;
       if (result.data.register) {
         this.auth(result.data.register);
@@ -63,24 +63,27 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  auth(user: UserInterface) {
+  public auth(user: IUser): void {
     this.userRegistered.emit(user);
   }
 
-  getEmailErrorMessage() {
+  public getEmailErrorMessage(): string {
     if (this.email.hasError('required')) {
       return 'You must enter a value';
     }
+
     if (this.email.hasError('email')) {
       return 'Not a valid email';
     }
+
     if (this.email.hasError('badLogin')) {
       return 'Wrong e-mail address or password';
     }
+
     return '';
   }
 
-  getPasswordErrorMessage() {
+  public getPasswordErrorMessage(): string {
     return this.password.hasError('required') ?
       'You must enter a value' :
       '';

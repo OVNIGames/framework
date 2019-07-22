@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open --proxy-config=proxy.prod.conf.js --port=1138",
+    "start": "ng serve --open --proxy-config=proxy.prod.conf.js --port=1137",
     "start-local": "ng serve --open --proxy-config=proxy.conf.js --port=1138",
     "build": "ng build",
     "build-lib": "ng build OvniGames && copy .\\LICENSE .\\dist\\ovni-games && copy .\\README.md .\\dist\\ovni-games",

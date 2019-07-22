@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LoginService } from './login.service';
-import { User } from '../user/user';
-import { ApolloQueryResult } from 'apollo-client';
-import { FormControl, Validators } from '@angular/forms';
-import { OauthInterface, OauthQueryInterface } from './oauth.interface';
 import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ApolloQueryResult } from 'apollo-client';
 import { ApiService } from '../api.service';
+import { User } from '../user/user';
+import { LoginService } from './login.service';
+import { IOauth, IOauthQuery } from './oauth.interface';
 
 let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
 baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
@@ -104,7 +104,7 @@ export class LoginComponent implements OnInit {
   /**
    * @ignore
    */
-  public oauthServices: OauthInterface[];
+  public oauthServices: IOauth[];
 
   private readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
   private readonly oauthErrorUrl = baseUrl + 'oauthError';
@@ -118,7 +118,7 @@ export class LoginComponent implements OnInit {
   /**
    * @ignore
    */
-  ngOnInit() {
+  public ngOnInit(): void {
     if (location.href.indexOf('oauthError') !== -1) {
       this.oauth.setErrors({oauthError: true});
     }
@@ -129,7 +129,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.loginService.getOauthService().subscribe((result: ApolloQueryResult<OauthQueryInterface>) => {
+    this.loginService.getOauthService().subscribe((result: ApolloQueryResult<IOauthQuery>) => {
       const list = {};
       this.oauthServices = result.data.oauth.data.filter(service => {
         if (this.oAuthList && this.oAuthList.indexOf(service.code) === -1) {
@@ -138,7 +138,8 @@ export class LoginComponent implements OnInit {
 
         return this.oAuthExclusion.indexOf(service.code) === -1;
       }).map(service => {
-        service.login += (service.login.indexOf('?') === -1 ? '?' : '&') + `redirect_url=${encodeURIComponent(this.oauthRedirectUrl)}&error_url=${encodeURIComponent(this.oauthErrorUrl)}`;
+        service.login += (service.login.indexOf('?') === -1 ? '?' : '&') +
+          `redirect_url=${encodeURIComponent(this.oauthRedirectUrl)}&error_url=${encodeURIComponent(this.oauthErrorUrl)}`;
 
         if (this.oAuthList) {
           list[service.code] = service;
@@ -151,7 +152,10 @@ export class LoginComponent implements OnInit {
       }
       Promise.all(this.oauthServices.map(service => {
         return new Promise(resolve => {
-          this.http.get((service.icon.charAt(0) === '/' ? this.api.getAssetPrefix() : '') + service.icon, {responseType: 'text'}).subscribe((svgBody: string) => {
+          this.http.get(
+            (service.icon.charAt(0) === '/' ? this.api.getAssetPrefix() : '') + service.icon,
+            {responseType: 'text'}
+          ).subscribe((svgBody: string) => {
             service.svg = this.sanitizer.bypassSecurityTrustHtml(svgBody);
             resolve();
           });
@@ -162,11 +166,12 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  loginHref(href: string): string {
+  public loginHref(href: string): string {
     const prefix = this.api.getAssetPrefix();
 
     if (href.charAt(0) === '/' && prefix) {
-      href = prefix + href + (href.indexOf('?') === -1 ? '?' : '&') + 'origin=' + encodeURIComponent(location.origin || location.protocol + '//' + location.host);
+      href = prefix + href + (href.indexOf('?') === -1 ? '?' : '&') +
+        'origin=' + encodeURIComponent(location.origin || location.protocol + '//' + location.host);
     }
 
     return href;
@@ -175,10 +180,11 @@ export class LoginComponent implements OnInit {
   /**
    * Trigger credentials login with form input data.
    */
-  login() {
+  public login(): void {
     this.loading = true;
     this.loginService.login(this.email.value, this.password.value, this.remember).then((user: User | null) => {
       this.loading = false;
+
       if (user) {
         this.auth(user);
 
@@ -196,30 +202,33 @@ export class LoginComponent implements OnInit {
    *
    * @param user logged in user.
    */
-  auth(user: User) {
+  public auth(user: User): void {
     this.userLoggedIn.emit(user);
   }
 
   /**
    * Returns the email address error message a string or empty string if valid.
    */
-  getEmailErrorMessage() {
+  public getEmailErrorMessage(): string {
     if (this.email.hasError('required')) {
       return 'You must enter a value';
     }
+
     if (this.email.hasError('email')) {
       return 'Not a valid email';
     }
+
     if (this.email.hasError('badLogin')) {
       return 'Wrong e-mail address or password';
     }
+
     return '';
   }
 
   /**
    * Returns the password error message a string or empty string if valid.
    */
-  getPasswordErrorMessage() {
+  public getPasswordErrorMessage(): string {
     return this.password.hasError('required') ?
       'You must enter a value' :
       '';

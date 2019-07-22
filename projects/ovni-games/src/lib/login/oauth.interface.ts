@@ -1,7 +1,7 @@
-import { QueryInterface } from '../query.interface';
 import { SafeHtml } from '@angular/platform-browser';
+import { IQuery } from '../query.interface';
 
-export interface OauthInterface {
+export interface IOauth {
   code: string;
   name: string;
   login: string;
@@ -12,6 +12,6 @@ export interface OauthInterface {
   svg?: SafeHtml;
 }
 
-export interface OauthQueryInterface {
-  oauth: QueryInterface<OauthInterface[]>;
+export interface IOauthQuery {
+  oauth: IQuery<IOauth[]>;
 }

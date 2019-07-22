@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as ioBase from 'socket.io-client';
 const io = (ioBase as any).default ? (ioBase as any).default : ioBase;
 
-export interface ExtendMessage<T> extends MessageEvent {
+export interface IExtendMessage<T> extends MessageEvent {
   action: 'extend';
   properties: T;
   room: string;
@@ -20,35 +20,35 @@ export class SocketService {
     this.messages = this.connect();
   }
 
-  getMessages() {
+  public getMessages(): Subject<MessageEvent> {
     return this.messages;
   }
 
-  sendMessage(message: Object) {
+  public sendMessage(message: object): void {
     this.messages.next(new MessageEvent('message', {
       data: message,
     }));
   }
 
-  join(room: string) {
+  public join(room: string): void {
     this.sendMessage({
       join: room,
     });
   }
 
-  leave(room: string) {
+  public leave(room: string): void {
     this.sendMessage({
       leave: room,
     });
   }
 
-  toggleWatching(room: string, watching: boolean) {
+  public toggleWatching(room: string, watching: boolean): void {
     this.sendMessage({
       [watching ? 'join' : 'leave']: room,
     });
   }
 
-  connect(socketUri: string = '', socketSecure: boolean = true): Subject<MessageEvent> {
+  public connect(socketUri: string = '', socketSecure: boolean = true): Subject<MessageEvent> {
     if (this.socket) {
       this.socket.close();
     }

@@ -1,10 +1,10 @@
-import { GameInterface } from './game/game.interface';
+import { IGame } from './game/game.interface';
 
-export interface LanguageInterface {
+export interface ILanguage {
   id?: number;
   code?: string;
   name?: string;
   native_name?: string;
-  games?: GameInterface;
+  games?: IGame;
   __typename: string;
 }

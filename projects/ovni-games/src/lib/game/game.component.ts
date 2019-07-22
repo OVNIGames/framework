@@ -12,7 +12,7 @@ export class GameComponent implements OnInit {
   constructor(private route: ActivatedRoute) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.id = +(this.route.snapshot.paramMap.get('id') || 0);
   }
 }

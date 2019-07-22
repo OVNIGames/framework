@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
+import { ApolloQueryResult } from 'apollo-client';
+import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
-import { Observable } from 'rxjs';
-import { ApolloQueryResult } from 'apollo-client';
-import { OauthQueryInterface } from './oauth.interface';
+import { IOauthQuery } from './oauth.interface';
 
-export interface LoginResultInterface {
+export interface ILoginResult {
   login: User | null;
 }
 
@@ -17,11 +17,11 @@ export class LoginService {
   constructor(private api: ApiService, private userService: UserService) {
   }
 
-  login(email: string, password: string, remember?: boolean): Promise<User | null> {
+  public login(email: string, password: string, remember?: boolean): Promise<User | null> {
     return this.userService.login(email, password, remember);
   }
 
-  getOauthService(): Observable<ApolloQueryResult<OauthQueryInterface>> {
+  public getOauthService(): Observable<ApolloQueryResult<IOauthQuery>> {
     return this.api.query('oauth', undefined, 'code,name,login,callback,redirect,color,icon');
   }
 }

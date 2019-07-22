@@ -1,9 +1,9 @@
-import { UserInterface } from './user.interface';
-import { GameInterface } from '../game/game.interface';
+import { IUser } from './user.interface';
+import { IGame } from '../game/game.interface';
 import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-export class User implements UserInterface {
+export class User implements IUser {
   __typename?: string;
   biography?: string;
   card_brand?: string;
@@ -13,7 +13,7 @@ export class User implements UserInterface {
   deleted_at?: Date | null;
   email?: string;
   firstname?: string;
-  games?: GameInterface[];
+  games?: IGame[];
   id?: number;
   language?: string;
   last_action_at?: Date | null;
@@ -31,7 +31,7 @@ export class User implements UserInterface {
   private readonly observable: Observable<User>;
   private observableCallback: () => void = () => {};
 
-  constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: UserInterface) => void) {
+  constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: IUser) => void) {
     this.assign(properties);
 
     this.observable = new Observable<User>(messenger => {
@@ -59,13 +59,13 @@ export class User implements UserInterface {
     return this;
   }
 
-  extend(properties: UserInterface) {
+  extend(properties: IUser) {
     this.assign(properties).observableCallback();
 
     return this;
   }
 
-  update(properties: UserInterface) {
+  update(properties: IUser) {
     this.extend(properties);
     if (this.subscription) {
       this.subscription.next(this);

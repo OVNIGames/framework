@@ -1,31 +1,31 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { GameInterface } from '../game/game.interface';
 import { Observable, Observer } from 'rxjs';
-import { ExtendMessage } from '../socket.service';
+import { ApiService } from '../api.service';
+import { IGame } from '../game/game.interface';
+import { IExtendMessage } from '../socket.service';
 
-export interface GamesListInterface {
-  top: GameInterface[];
+export interface IGamesList {
+  top: IGame[];
   count: number;
   room: string;
 }
 
-export interface GamesListResultInterface {
-  gamesList: GamesListInterface;
+export interface IGamesListResult {
+  gamesList: IGamesList;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GameListService {
-  protected list: GamesListInterface | null = null;
+  protected list: IGamesList | null = null;
 
   constructor(private api: ApiService) {
   }
 
-  get() {
-    return new Observable((gamesListSubscription: Observer<GamesListInterface>) => {
+  public get(): Observable<IGamesList> {
+    return new Observable((gamesListSubscription: Observer<IGamesList>) => {
       if (this.list) {
         gamesListSubscription.next(this.list);
 
@@ -42,11 +42,11 @@ export class GameListService {
         }
         count
         room
-      `).subscribe((result: ApolloQueryResult<GamesListResultInterface>) => {
+      `).subscribe((result: ApolloQueryResult<IGamesListResult>) => {
         gamesListSubscription.next(this.list = result.data.gamesList);
         this.api.join(this.list.room);
-        this.api.onRoomExtend(this.list.room, (message: ExtendMessage<GamesListInterface>) => {
-          (<any> Object).assign(this.list, message.properties);
+        this.api.onRoomExtend(this.list.room, (message: IExtendMessage<IGamesList>) => {
+          Object.assign(this.list, message.properties);
         });
       });
     });

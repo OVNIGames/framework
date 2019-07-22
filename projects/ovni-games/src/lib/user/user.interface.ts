@@ -1,7 +1,7 @@
-import { GameInterface } from '../game/game.interface';
-import { QueryInterface } from '../query.interface';
+import { IGame } from '../game/game.interface';
+import { IQuery } from '../query.interface';
 
-export interface UserInterface {
+export interface IUser {
   id?: number;
   room?: string;
   name?: string;
@@ -24,11 +24,11 @@ export interface UserInterface {
   last_action_at?: Date|null;
   trial_ends_at?: Date|null;
   last_network_event?: Date|null;
-  games?: GameInterface[];
+  games?: IGame[];
   __typename?: string;
 }
 
-export interface UsersQueryInterface {
-  users: QueryInterface<UserInterface[]>;
+export interface IUsersQuery {
+  users: IQuery<IUser[]>;
 }
 
