@@ -43,7 +43,7 @@ export class RegisterService {
     };
 
     for (const key in parameters) {
-      if (parameters[key] === null) {
+      if (typeof parameters[key] === 'undefined' || parameters[key] === null) {
         delete parameters[key];
       }
     }
