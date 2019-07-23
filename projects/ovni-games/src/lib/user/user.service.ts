@@ -43,17 +43,17 @@ export class UserService {
     });
   }
 
-  getUserDataFields(): string {
+  public getUserDataFields(): string {
     return this.userDataFields;
   }
 
-  setUserDataFields(userDataFields: string) {
+  public setUserDataFields(userDataFields: string): void {
     this.userDataFields = userDataFields +
       (/(^|[\s,{}])id([\s,{}]|$)/.test(userDataFields) ? '' : '\nid') +
       (/(^|[\s,{}])room([\s,{}]|$)/.test(userDataFields) ? '' : '\nroom');
   }
 
-  invalidCurrentUser() {
+  public invalidCurrentUser(): void {
     if (this.currentUser && this.currentUser.room) {
       this.api.leave(this.currentUser.room);
     }
@@ -61,7 +61,7 @@ export class UserService {
     this.currentUser = null;
   }
 
-  login(email: string, password: string, remember?: boolean): Promise<User | null> {
+  public login(email: string, password: string, remember?: boolean): Promise<User | null> {
     return new Promise(resolve => {
       this.api.mutate<ILoginResult>('login', {
         email,
@@ -75,24 +75,29 @@ export class UserService {
         }
 
         const user = new User(result.data.login, undefined, (properties: IUser) => {
-          properties.id = user!.id;
-          this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
-            user.updated_at = updateResult.data.updateUser!.updated_at;
+          if (user) {
+            properties.id = user.id;
+          }
+          this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
+            .subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
+              if (updateResult.data.updateUser) {
+                user.updated_at = updateResult.data.updateUser.updated_at;
+              }
+            });
           });
-        });
         this.registerUser(user, true);
         resolve(user);
       });
     });
   }
 
-  logout(): Observable<FetchResult<{logout: boolean}, Record<string, any>, Record<string, any>>> {
+  public logout(): Observable<FetchResult<{logout: boolean}, Record<string, object>, Record<string, object>>> {
     this.invalidCurrentUser();
 
     return this.api.mutate('logout');
   }
 
-  unregisterUser(user: User) {
+  public unregisterUser(user: User): void {
     if (user.email && this.usersByEmail[user.email]) {
       delete this.usersByEmail[user.email];
     }
@@ -108,7 +113,7 @@ export class UserService {
     user.kill();
   }
 
-  registerUser(user: User, markAsCurrentUser?: boolean) {
+  public registerUser(user: User, markAsCurrentUser?: boolean): void {
     if (markAsCurrentUser) {
       this.currentUser = user;
     }
@@ -124,30 +129,30 @@ export class UserService {
     }
   }
 
-  getRegisteredUser(parameters: object): User | null {
-    if (parameters['current'] && this.currentUser) {
+  public getRegisteredUser(parameters: {[name: string]: unknown}): User | null {
+    if (parameters && parameters.current && this.currentUser) {
       return this.currentUser;
     }
-    if (parameters['email']) {
-      const email = parameters['email'].toLowerCase();
+    if (parameters && typeof parameters.email === 'string') {
+      const email = parameters.email.toLowerCase();
       if (this.usersByEmail[email]) {
         return this.usersByEmail[email];
       }
     }
-    if (parameters['id']) {
-      const id = (parameters['id'] + '').toLowerCase();
+    if (parameters && parameters.id) {
+      const id = (parameters.id + '').toLowerCase();
       if (this.usersById[id]) {
         return this.usersById[id];
       }
     }
-    if (parameters['room'] && this.usersByRoom[parameters['room']]) {
-      return this.usersByRoom[parameters['room']];
+    if (parameters && (typeof parameters.room === 'string' || typeof parameters.room === 'number') && this.usersByRoom[parameters.room]) {
+      return this.usersByRoom[parameters.room];
     }
 
     return null;
   }
 
-  get(parameters: IApiParameters): Subject<User | null> {
+  public get(parameters: IApiParameters): Subject<User | null> {
     let user: User;
     const observable = new Observable((userSubscription: Observer<User | null>) => {
       const registeredUser = this.getRegisteredUser(parameters);
@@ -163,12 +168,18 @@ export class UserService {
           return;
         }
         user = new User(result.data.users.data[0], userSubscription, (properties: IUser) => {
-          properties.id = user!.id;
-          this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at').subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
-            user.updated_at = updateResult.data.updateUser!.updated_at;
-          });
+          if (user) {
+            properties.id = user.id;
+          }
+
+          this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
+            .subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
+              if (updateResult.data.updateUser) {
+                user.updated_at = updateResult.data.updateUser.updated_at;
+              }
+            });
         });
-        this.registerUser(user, !!parameters['current']);
+        this.registerUser(user, !!parameters.current);
         userSubscription.next(user);
       });
     });
@@ -189,26 +200,30 @@ export class UserService {
           }
         }
       },
-      error: () => {},
-      complete: () => {},
+      error: () => {
+        // noop
+      },
+      complete: () => {
+        // noop
+      },
     };
 
     return new AnonymousSubject(observer, observable);
   }
 
-  getCurrent(): Subject<User | null> {
+  public getCurrent(): Subject<User | null> {
     return this.get({current: true});
   }
 
-  getById(id: number): Subject<User | null> {
+  public getById(id: number): Subject<User | null> {
     return this.get({id});
   }
 
-  getByEmail(email: string): Subject<User | null> {
+  public getByEmail(email: string): Subject<User | null> {
     return this.get({email});
   }
 
-  update(id: number, properties: object) {
+  public update(id: number, properties: object) {
     return new Promise(resolve => {
       this.getById(id).subscribe((user: User) => {
         resolve(user.update(properties));
