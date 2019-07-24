@@ -25,6 +25,7 @@ export class User implements IUser {
   photo_updated_at?: Date | null;
   sex?: number;
   stripe_id?: string;
+  timezone?: string;
   room?: string;
   trial_ends_at?: Date | null;
   updated_at?: Date;

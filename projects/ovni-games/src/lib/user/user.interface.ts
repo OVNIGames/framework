@@ -13,6 +13,7 @@ export interface IUser {
   biography?: string;
   phone?: string;
   sex?: number;
+  timezone?: string;
   stripe_id?: string;
   card_brand?: string;
   card_last_four?: string;

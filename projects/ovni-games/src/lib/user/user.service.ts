@@ -3,6 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { FetchResult } from 'apollo-link';
 import { Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
+import { ITimezone } from '../..';
 import { ApiService, IApiParameters } from '../api.service';
 import { ILoginResult } from '../login/login.service';
 import { IExtendMessage } from '../socket.service';
@@ -229,5 +230,17 @@ export class UserService {
         resolve(user.update(properties));
       });
     });
+  }
+
+  public updateTimezone(id: number, timezone: ITimezone | string | number) {
+    if (typeof timezone === 'number') {
+      timezone = timezone.toString();
+    }
+
+    if (typeof timezone !== 'string') {
+      timezone = timezone.utc[0];
+    }
+
+    return this.update(id, {timezone});
   }
 }

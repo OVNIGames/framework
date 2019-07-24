@@ -1,0 +1,3 @@
+<mat-select [value]="value" (valueChange)="update($event)">
+  <mat-option *ngFor="let timezone of timezones" [value]="timezone">{{ timezone.text }}</mat-option>
+</mat-select>

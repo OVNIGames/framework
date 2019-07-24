@@ -4,6 +4,7 @@ export * from './games-list/public_api';
 export * from './hook/public_api';
 export * from './login/public_api';
 export * from './register/public_api';
+export * from './timezone-selector/public_api';
 export * from './user/public_api';
 export * from './api.service';
 export * from './graphql.module';
