@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
+import { findTimezone } from './find-timezone';
 import { ITimezone } from './timezone.interface';
 import { timezones } from './timezones';
 
@@ -9,21 +10,37 @@ import { timezones } from './timezones';
   selector: 'og-timezone-selector',
   templateUrl: './timezone-selector.component.html',
 })
-export class TimezoneSelectorComponent implements OnInit {
+export class TimezoneSelectorComponent implements AfterViewInit {
+  private _value?: ITimezone;
   public timezones: ITimezone[] = timezones;
   @Input() public guessIfNull?: boolean;
-  @Input() public value?: ITimezone;
+  @Input() public get value(): ITimezone | string | number | undefined {
+    return this._value;
+  }
+  public set value(timezone: ITimezone | string | number | undefined) {
+    if (typeof timezone === 'string' || typeof timezone === 'number') {
+      timezone = findTimezone(timezone);
+    }
+
+    this._value = timezone;
+  }
   @Output() public valueChange: EventEmitter<ITimezone> = new EventEmitter<ITimezone>();
 
-  public ngOnInit(): void {
+  public ngAfterViewInit(): void {
     if (this.guessIfNull && !this.value) {
       this.guess();
     }
   }
 
-  public update(value: ITimezone): void {
-    this.value = value;
-    this.valueChange.emit(value);
+  public update(abbr: string): void {
+    this.updateValue(this.timezones.filter(timezone => timezone.abbr === abbr)[0]);
+  }
+
+  public updateValue(value: ITimezone): void {
+    if (this.value !== value) {
+      this.value = value;
+      this.valueChange.emit(value);
+    }
   }
 
   protected getTimezone(): string | null {
@@ -35,10 +52,12 @@ export class TimezoneSelectorComponent implements OnInit {
   }
 
   public guess(): void {
-    const timezone = this.getTimezone();
+    const timezone = findTimezone(this.getTimezone() || (new Date()).getTimezoneOffset() / -60);
 
     if (timezone) {
-      this.update(this.timezones.filter(data => data.utc.indexOf(timezone))[0] || undefined);
+      this.updateValue(timezone);
+
+      return;
     }
   }
 }

@@ -67,10 +67,18 @@ export class User implements IUser {
   }
 
   update(properties: IUser) {
+    for (const key in properties) {
+      if (typeof properties[key] === 'undefined') {
+        delete properties[key];
+      }
+    }
+
     this.extend(properties);
+
     if (this.subscription) {
       this.subscription.next(this);
     }
+
     if (this.mutator) {
       this.mutator(properties);
     }

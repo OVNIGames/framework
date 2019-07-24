@@ -19,6 +19,11 @@
           <input matInput [(ngModel)]="lastName">
         </mat-form-field>
       </div>
+      <div>
+        <og-timezone-selector [value]="timezone" (valueChange)="timezone = $event.utc[0]" [guessIfNull]="true">
+          <mat-label>Timezone</mat-label>
+        </og-timezone-selector>
+      </div>
       <button mat-stroked-button (click)="cancel()">Cancel</button>
       <button type="submit" mat-flat-button color="primary" (click)="save()">Save</button>
     </div>

@@ -12,6 +12,7 @@ export class UserComponent implements OnInit, OnChanges {
   public editing = false;
   public firstName = '';
   public lastName = '';
+  public timezone?: string;
   @Input() public user: User;
   @Output() protected userLoggedOut: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -24,6 +25,7 @@ export class UserComponent implements OnInit, OnChanges {
         this.user = user;
         this.firstName = user.firstname || '';
         this.lastName = user.lastname || '';
+        this.timezone = user.timezone || undefined;
       });
     });
   }
@@ -39,6 +41,7 @@ export class UserComponent implements OnInit, OnChanges {
     this.loading = true;
     this.firstName = '';
     this.lastName = '';
+    this.timezone = undefined;
     this.userService.logout().subscribe(() => {
       this.userLoggedOut.emit(true);
       this.loading = false;
@@ -57,6 +60,7 @@ export class UserComponent implements OnInit, OnChanges {
     this.user.update({
       firstname: this.firstName,
       lastname: this.lastName,
+      timezone: this.timezone,
     });
     this.user.name = `${this.firstName} ${this.lastName}`;
     this.editing = false;
