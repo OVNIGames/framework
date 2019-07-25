@@ -1,6 +1,6 @@
 <mat-form-field>
-  <ng-content></ng-content>
-  <mat-select [value]="value && value.abbr" (valueChange)="update($event)">
-    <mat-option *ngFor="let timezone of timezones" [value]="timezone.abbr">{{ timezone.text }}</mat-option>
+  <mat-label *ngIf="label">{{ label }}</mat-label>
+  <mat-select [value]="value" (valueChange)="update($event)">
+    <mat-option *ngFor="let timezone of timezones" [value]="timezone">{{ timezone.text }}</mat-option>
   </mat-select>
 </mat-form-field>

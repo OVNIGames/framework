@@ -20,9 +20,7 @@
         </mat-form-field>
       </div>
       <div>
-        <og-timezone-selector [value]="timezone" (valueChange)="timezone = $event.utc[0]" [guessIfNull]="true">
-          <mat-label>Timezone</mat-label>
-        </og-timezone-selector>
+        <og-timezone-selector [(value)]="timezone" [guessIfNull]="true" label="Timezone" i18n-label></og-timezone-selector>
       </div>
       <button mat-stroked-button (click)="cancel()">Cancel</button>
       <button type="submit" mat-flat-button color="primary" (click)="save()">Save</button>

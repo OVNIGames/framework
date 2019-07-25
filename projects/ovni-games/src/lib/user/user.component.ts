@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ITimezone, IUser } from '../..';
+import { findTimezone, getTimezoneName } from '../timezone-selector/find-timezone';
 import { UserService } from './user.service';
 import { User } from './user';
 
@@ -12,32 +14,35 @@ export class UserComponent implements OnInit, OnChanges {
   public editing = false;
   public firstName = '';
   public lastName = '';
-  public timezone?: string;
+  public timezone?: ITimezone;
   @Input() public user: User;
   @Output() protected userLoggedOut: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private userService: UserService) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.userService.getCurrent().subscribe((user: User) => {
       user.getObservable().subscribe((user: User) => {
         this.user = user;
-        this.firstName = user.firstname || '';
-        this.lastName = user.lastname || '';
-        this.timezone = user.timezone || undefined;
+        this.extractUserData(user);
       });
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes.user && changes.user.currentValue) {
-      this.firstName = changes.user.currentValue.firstname || '';
-      this.lastName = changes.user.currentValue.lastname || '';
+      this.extractUserData(changes.user.currentValue);
     }
   }
 
-  logout(): void {
+  protected extractUserData(user: IUser): void {
+    this.firstName = user.firstname || '';
+    this.lastName = user.lastname || '';
+    this.timezone = findTimezone(user.timezone);
+  }
+
+  public logout(): void {
     this.loading = true;
     this.firstName = '';
     this.lastName = '';
@@ -48,19 +53,19 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
 
-  edit(): void {
+  public edit(): void {
     this.editing = true;
   }
 
-  cancel(): void {
+  public cancel(): void {
     this.editing = false;
   }
 
-  save(): void {
+  public save(): void {
     this.user.update({
       firstname: this.firstName,
       lastname: this.lastName,
-      timezone: this.timezone,
+      timezone: getTimezoneName(this.timezone),
     });
     this.user.name = `${this.firstName} ${this.lastName}`;
     this.editing = false;

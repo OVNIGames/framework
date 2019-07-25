@@ -23,6 +23,7 @@ export class UserService {
     firstname
     lastname
     name
+    timezone
     room
     games {
       name
