@@ -8,8 +8,11 @@ import { User } from '../user/user';
 import { LoginService } from './login.service';
 import { IOauth, IOauthQuery } from './oauth.interface';
 
-let baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
-baseUrl += baseUrl.indexOf('?') === -1 ? '?' : '&';
+function concatQueryParams(base: string, params: string | null) {
+  return base + (params ? (base.indexOf('?') === -1 ? '?' : '&') + params : '');
+}
+
+const baseUrl = location.href.replace(/[?&](oauthError|error|oauthRedirect)(=[^&]+)?/g, '');
 
 /**
  * Allow the use to log in the application via dedicated credentials or OAuth (Facebook, Twitter, Google, etc.).
@@ -62,6 +65,11 @@ export class LoginComponent implements OnInit {
   @Input() public oAuthList: null|string[] = null;
 
   /**
+   * Additional scope for OAuth.
+   */
+  @Input() public oAuthScope: null|string[] = null;
+
+  /**
    * Flatten the card design (no shadow, no padding, no margin on the main container).
    */
   @Input() public flat = false;
@@ -106,8 +114,8 @@ export class LoginComponent implements OnInit {
    */
   public oauthServices: IOauth[];
 
-  private readonly oauthRedirectUrl = baseUrl + 'oauthRedirect';
-  private readonly oauthErrorUrl = baseUrl + 'oauthError';
+  private readonly oauthRedirectUrl = concatQueryParams(baseUrl, 'oauthRedirect');
+  private readonly oauthErrorUrl = concatQueryParams(baseUrl, 'oauthError');
 
   /**
    * @ignore
@@ -138,8 +146,10 @@ export class LoginComponent implements OnInit {
 
         return this.oAuthExclusion.indexOf(service.code) === -1;
       }).map(service => {
-        service.login += (service.login.indexOf('?') === -1 ? '?' : '&') +
-          `redirect_url=${encodeURIComponent(this.oauthRedirectUrl)}&error_url=${encodeURIComponent(this.oauthErrorUrl)}`;
+        service.login = concatQueryParams(
+          service.login,
+          `redirect_url=${encodeURIComponent(this.oauthRedirectUrl)}&error_url=${encodeURIComponent(this.oauthErrorUrl)}`
+        );
 
         if (this.oAuthList) {
           list[service.code] = service;
@@ -170,8 +180,17 @@ export class LoginComponent implements OnInit {
     const prefix = this.api.getAssetPrefix();
 
     if (href.charAt(0) === '/' && prefix) {
-      href = prefix + href + (href.indexOf('?') === -1 ? '?' : '&') +
-        'origin=' + encodeURIComponent(location.origin || location.protocol + '//' + location.host);
+      href = concatQueryParams(
+        prefix + href,
+        'origin=' + encodeURIComponent(location.origin || location.protocol + '//' + location.host)
+      );
+    }
+
+    if (this.oAuthScope && this.oAuthScope.length) {
+      href = concatQueryParams(
+        href,
+        'scope=' + encodeURIComponent(this.oAuthScope.join(','))
+      );
     }
 
     return href;
