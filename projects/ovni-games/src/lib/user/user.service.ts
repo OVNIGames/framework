@@ -83,7 +83,7 @@ export class UserService {
           this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
             .subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
               if (updateResult.data.updateUser) {
-                user.updated_at = updateResult.data.updateUser.updated_at;
+                user.updated_at = new Date(updateResult.data.updateUser.updated_at);
               }
             });
           });
@@ -177,7 +177,7 @@ export class UserService {
           this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
             .subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
               if (updateResult.data.updateUser) {
-                user.updated_at = updateResult.data.updateUser.updated_at;
+                user.updated_at = new Date(updateResult.data.updateUser.updated_at);
               }
             });
         });
