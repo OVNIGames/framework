@@ -1,4 +1,4 @@
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Observer, Subscriber } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { IGame } from '../game/game.interface';
 import { IUser } from './user.interface';
@@ -37,7 +37,7 @@ export class User implements IUser {
   constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: IUser) => void) {
     this.assign(properties);
 
-    this.observable = new Observable<User>((messenger: Subject<User>) => {
+    this.observable = new Observable<User>((messenger: Subscriber<User>) => {
       this.observableCallback = () => {
         messenger.next(this);
       };
