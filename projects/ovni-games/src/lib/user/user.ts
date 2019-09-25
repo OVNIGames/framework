@@ -37,7 +37,7 @@ export class User implements IUser {
   constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: IUser) => void) {
     this.assign(properties);
 
-    this.observable = new Observable<User>((messenger: Subject) => {
+    this.observable = new Observable<User>((messenger: Subject<User>) => {
       this.observableCallback = () => {
         messenger.next(this);
       };
