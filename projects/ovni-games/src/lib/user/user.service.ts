@@ -3,7 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { FetchResult } from 'apollo-link';
 import { Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
-import { ITimezone } from '../..';
+import { IRawUser, ITimezone } from '../..';
 import { ApiService, IApiParameters } from '../api.service';
 import { ILoginResult } from '../login/login.service';
 import { IExtendMessage } from '../socket.service';
@@ -81,9 +81,11 @@ export class UserService {
             properties.id = user.id;
           }
           this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
-            .subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
+            .subscribe((updateResult: ApolloQueryResult<{updateUser: IRawUser}>) => {
               if (updateResult.data.updateUser) {
-                user.updated_at = updateResult.data.updateUser.updated_at;
+                user.assign({
+                  updated_at: updateResult.data.updateUser.updated_at,
+                });
               }
             });
           });
@@ -175,9 +177,11 @@ export class UserService {
           }
 
           this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
-            .subscribe((updateResult: ApolloQueryResult<{updateUser: IUser}>) => {
+            .subscribe((updateResult: ApolloQueryResult<{updateUser: IRawUser}>) => {
               if (updateResult.data.updateUser) {
-                user.updated_at = updateResult.data.updateUser.updated_at;
+                user.assign({
+                  updated_at: updateResult.data.updateUser.updated_at,
+                });
               }
             });
         });

@@ -1,4 +1,4 @@
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subscriber } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { IGame } from '../game/game.interface';
 import { IUser } from './user.interface';
@@ -37,7 +37,7 @@ export class User implements IUser {
   constructor(properties: object, private subscription?: Observer<User>, private mutator?: (user: IUser) => void) {
     this.assign(properties);
 
-    this.observable = new Observable<User>(messenger => {
+    this.observable = new Observable<User>((messenger: Subscriber<User>) => {
       this.observableCallback = () => {
         messenger.next(this);
       };
@@ -49,6 +49,10 @@ export class User implements IUser {
     }).pipe(share());
   }
 
+  public get photo_time(): number | undefined {
+    return this.photo_updated_at ? this.photo_updated_at.getTime() : undefined;
+  }
+
   public getSubscription(): Observer<User> | undefined {
     return this.subscription;
   }
@@ -58,6 +62,12 @@ export class User implements IUser {
   }
 
   public assign(properties: object): User {
+    ['created_at', 'deleted_at', 'last_action_at', 'last_network_event', 'photo_updated_at', 'trial_ends_at', 'updated_at'].forEach(key => {
+      if (typeof properties[key] === 'string') {
+        properties[key] = new Date(properties[key]);
+      }
+    });
+
     Object.assign(this, properties);
 
     return this;
