@@ -125,6 +125,8 @@ export class ApiService {
     name: string,
     parameters?: object | IApiParameters | null,
     returnedFields?: string | string[] | null,
+    variables?: Record<string, any>,
+    context?: any,
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
     const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
       return `${key}: ${JSON.stringify(parameters[key])}`;
@@ -140,7 +142,21 @@ export class ApiService {
           ${name}${parametersString} ${returnedFields}
         }
       `,
+      variables,
+      context,
     });
+  }
+
+  public upload<T>(
+    name: string,
+    parameters?: object | IApiParameters | null,
+    returnedFields?: string | string[] | null,
+    variables?: Record<string, any>,
+    context?: any,
+  ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
+    return this.mutate(name, parameters, returnedFields, variables, Object.assign({
+      useMultipart: true,
+    }, context));
   }
 
   public onExtend<T>(callback: (message: IExtendMessage<T & object>) => void, room?: string): () => void {
