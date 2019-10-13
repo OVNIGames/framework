@@ -14,6 +14,22 @@ export interface IApiParameters {
   [key: string]: string | number | boolean | null;
 }
 
+export type IApiParametersInput = string | object | IApiParameters | null;
+
+export function formatApiParameters(parameters: IApiParametersInput | undefined): string {
+  if (!parameters) {
+    return '';
+  }
+
+  if (typeof parameters === 'string') {
+    return parameters;
+  }
+
+  return `(${Object.keys(parameters).map(key => {
+    return `${key}: ${JSON.stringify(parameters[key])}`;
+  }).join(', ')})`;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -95,14 +111,11 @@ export class ApiService {
 
   public query<T>(
     name: string,
-    parameters?: IApiParameters | null,
+    parameters?: IApiParametersInput,
     returnedDataFields?: string | string[] | null,
     returnedExtraFields?: string | string[] | null,
   ): Observable<ApolloQueryResult<T>> {
-    const keys = parameters ? Object.keys(parameters) : [];
-    const parametersString = parameters && keys.length ? `(${keys.map(key => {
-      return `${key}: ${JSON.stringify(parameters[key])}`;
-    }).join(', ')})` : '';
+    const parametersString = formatApiParameters(parameters);
 
     if (returnedDataFields && typeof returnedDataFields === 'object') {
       returnedDataFields = returnedDataFields.join(',');
@@ -123,17 +136,17 @@ export class ApiService {
 
   public mutate<T>(
     name: string,
-    parameters?: object | IApiParameters | null,
+    parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
     variables?: Record<string, any>,
     context?: any,
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
-    const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
-      return `${key}: ${JSON.stringify(parameters[key])}`;
-    }).join(', ')})` : '';
+    const parametersString = formatApiParameters(parameters);
+
     if (returnedFields instanceof Array) {
       returnedFields = returnedFields.join(',');
     }
+
     returnedFields = returnedFields ? `{${returnedFields}}` : '';
 
     return this.apollo.mutate<T>({
@@ -149,7 +162,7 @@ export class ApiService {
 
   public upload<T>(
     name: string,
-    parameters?: object | IApiParameters | null,
+    parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
     variables?: Record<string, any>,
     context?: any,
