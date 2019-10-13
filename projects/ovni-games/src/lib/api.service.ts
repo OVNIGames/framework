@@ -167,7 +167,7 @@ export class ApiService {
     variables?: Record<string, any>,
     context?: any,
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
-    return this.mutate(name, parameters, returnedFields, variables, Object.assign({
+    return this.mutate<T>(name, parameters, returnedFields, variables, Object.assign({
       useMultipart: true,
     }, context));
   }
