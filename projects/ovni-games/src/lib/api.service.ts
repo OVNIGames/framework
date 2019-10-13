@@ -30,6 +30,14 @@ export function formatApiParameters(parameters: IApiParametersInput | undefined)
   }).join(', ')})`;
 }
 
+export function formatVariablesString(variables: Record<string, any> | null | undefined) {
+  const variablesNames = Object.keys(variables || {});
+
+  return variablesNames.length ? `(${variablesNames.map(name => {
+    return `$${name}: ${typeof (variables as Record<string, any>)[name]}`;
+  })})` : '';
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -114,6 +122,7 @@ export class ApiService {
     parameters?: IApiParametersInput,
     returnedDataFields?: string | string[] | null,
     returnedExtraFields?: string | string[] | null,
+    variables?: Record<string, any> | null,
   ): Observable<ApolloQueryResult<T>> {
     const parametersString = formatApiParameters(parameters);
 
@@ -127,10 +136,11 @@ export class ApiService {
 
     return this.apollo.watchQuery<T>({
       query: gql`
-        {
+        query q${formatVariablesString(variables)} {
           ${name}${parametersString} {${returnedDataFields ? `data{${returnedDataFields}}` : ''}${returnedExtraFields || ''}}
         }
       `,
+      variables: variables as Record<string, any>,
     }).valueChanges;
   }
 
@@ -151,7 +161,7 @@ export class ApiService {
 
     return this.apollo.mutate<T>({
       mutation: gql`
-        mutation {
+        mutation mut${formatVariablesString(variables)} {
           ${name}${parametersString} ${returnedFields}
         }
       `,
