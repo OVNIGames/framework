@@ -14,6 +14,42 @@ export interface IApiParameters {
   [key: string]: string | number | boolean | null;
 }
 
+export type IApiParametersInput = string | object | IApiParameters | null;
+
+export function formatApiParameters(parameters: IApiParametersInput | undefined): string {
+  if (!parameters) {
+    return '';
+  }
+
+  if (typeof parameters === 'string') {
+    return parameters;
+  }
+
+  return `(${Object.keys(parameters).map(key => {
+    return `${key}: ${JSON.stringify(parameters[key])}`;
+  }).join(', ')})`;
+}
+
+export function formatVariableType(variable: unknown) {
+  console.log(variable);
+
+  if (variable instanceof File) {
+    return 'Upload!';
+  }
+
+  const type = typeof variable;
+
+  return type.substr(0, 1).toUpperCase() + type.substr(1);
+}
+
+export function formatVariablesString(variables: Record<string, any> | null | undefined) {
+  const variablesNames = Object.keys(variables || {});
+
+  return variablesNames.length ? `(${variablesNames.map(name => {
+    return `$${name}: ${formatVariableType((variables as Record<string, any>)[name])}`;
+  })})` : '';
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -95,14 +131,12 @@ export class ApiService {
 
   public query<T>(
     name: string,
-    parameters?: IApiParameters | null,
+    parameters?: IApiParametersInput,
     returnedDataFields?: string | string[] | null,
     returnedExtraFields?: string | string[] | null,
+    variables?: Record<string, any> | null,
   ): Observable<ApolloQueryResult<T>> {
-    const keys = parameters ? Object.keys(parameters) : [];
-    const parametersString = parameters && keys.length ? `(${keys.map(key => {
-      return `${key}: ${JSON.stringify(parameters[key])}`;
-    }).join(', ')})` : '';
+    const parametersString = formatApiParameters(parameters);
 
     if (returnedDataFields && typeof returnedDataFields === 'object') {
       returnedDataFields = returnedDataFields.join(',');
@@ -114,33 +148,50 @@ export class ApiService {
 
     return this.apollo.watchQuery<T>({
       query: gql`
-        {
+        query q${formatVariablesString(variables)} {
           ${name}${parametersString} {${returnedDataFields ? `data{${returnedDataFields}}` : ''}${returnedExtraFields || ''}}
         }
       `,
+      variables: variables as Record<string, any>,
     }).valueChanges;
   }
 
   public mutate<T>(
     name: string,
-    parameters?: object | IApiParameters | null,
+    parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
+    variables?: Record<string, any>,
+    context?: any,
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
-    const parametersString = parameters ? `(${Object.keys(parameters).map(key => {
-      return `${key}: ${JSON.stringify(parameters[key])}`;
-    }).join(', ')})` : '';
+    const parametersString = formatApiParameters(parameters);
+
     if (returnedFields instanceof Array) {
       returnedFields = returnedFields.join(',');
     }
+
     returnedFields = returnedFields ? `{${returnedFields}}` : '';
 
     return this.apollo.mutate<T>({
       mutation: gql`
-        mutation {
+        mutation mut${formatVariablesString(variables)} {
           ${name}${parametersString} ${returnedFields}
         }
       `,
+      variables,
+      context,
     });
+  }
+
+  public upload<T>(
+    name: string,
+    parameters?: IApiParametersInput,
+    returnedFields?: string | string[] | null,
+    variables?: Record<string, any>,
+    context?: any,
+  ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
+    return this.mutate<T>(name, parameters, returnedFields, variables, Object.assign({
+      useMultipart: true,
+    }, context));
   }
 
   public onExtend<T>(callback: (message: IExtendMessage<T & object>) => void, room?: string): () => void {
