@@ -30,11 +30,23 @@ export function formatApiParameters(parameters: IApiParametersInput | undefined)
   }).join(', ')})`;
 }
 
+export function formatVariableType(variable: unknown) {
+  console.log(variable);
+
+  if (variable instanceof File) {
+    return 'Upload!';
+  }
+
+  const type = typeof variable;
+
+  return type.substr(0, 1).toUpperCase() + type.substr(1);
+}
+
 export function formatVariablesString(variables: Record<string, any> | null | undefined) {
   const variablesNames = Object.keys(variables || {});
 
   return variablesNames.length ? `(${variablesNames.map(name => {
-    return `$${name}: ${typeof (variables as Record<string, any>)[name]}`;
+    return `$${name}: ${formatVariableType((variables as Record<string, any>)[name])}`;
   })})` : '';
 }
 
