@@ -1,11 +1,11 @@
-import { async, TestBed } from '@angular/core/testing';
 import { Component, ComponentFactoryResolver, TemplateRef, ViewChild } from '@angular/core';
-import { HookComponent } from './hook.component';
-import { HookChildComponent } from './hook-child.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { HookableComponent } from './hookable.component';
-import { HookService } from './hook.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { HookChildComponent } from './hook-child.component';
+import { HookComponent } from './hook.component';
+import { HookService } from './hook.service';
+import { HookableComponent } from './hookable.component';
 
 @Component({
   template: `
@@ -48,18 +48,18 @@ export class BonusComponent extends HookableComponent {
   `,
 })
 export class AppHookComponent {
-  barHeaderPriority = 1;
+  public barHeaderPriority = 1;
 
-  @ViewChild('fooHeader') fooHeader;
+  @ViewChild('fooHeader', {static: true}) public fooHeader: HookComponent;
 
   constructor(public resolver: ComponentFactoryResolver) {
   }
 }
 
 describe('HookComponent', () => {
-  let component;
-  let fixture;
-  let hookService;
+  let component: AppHookComponent;
+  let fixture: ComponentFixture<AppHookComponent>;
+  let hookService: HookService;
 
   beforeEach(async(() => {
     TestBed
@@ -86,22 +86,22 @@ describe('HookComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppHookComponent);
     fixture.detectChanges();
-    component = <AppHookComponent> fixture.componentInstance;
+    component = fixture.componentInstance as AppHookComponent;
   });
 
   it('should place templates in hooks', () => {
-    const article = <HTMLElement> fixture.debugElement.query(By.css('article')).nativeElement;
-    expect(article.textContent.trim()).toBe('');
-    const header = <HTMLElement> fixture.debugElement.query(By.css('header')).nativeElement;
-    expect(header.textContent.trim().replace(/\s+/g, ' ')).toBe('Hello World!');
-    const template = <TemplateRef<Component>> component.fooHeader.template;
+    const article = fixture.debugElement.query(By.css('article')).nativeElement as HTMLElement;
+    expect((article.textContent as string).trim()).toBe('');
+    const header = fixture.debugElement.query(By.css('header')).nativeElement as HTMLElement;
+    expect((header.textContent as string).trim().replace(/\s+/g, ' ')).toBe('Hello World!');
+    const template = component.fooHeader.template as TemplateRef<Component>;
     expect(template).toBeTruthy();
     component.barHeaderPriority = 3;
     fixture.detectChanges();
-    expect(header.textContent.trim().replace(/\s+/g, ' ')).toBe('World! Hello');
+    expect((header.textContent as string).trim().replace(/\s+/g, ' ')).toBe('World! Hello');
     hookService.storeComponent('header', 'bonus', 9, component.resolver, BonusComponent);
     fixture.detectChanges();
     expect(hookService.getTemplates('header').length).toBe(2);
-    expect(header.textContent.trim().replace(/\s+/g, ' ')).toBe('World! Hello Bonus');
+    expect((header.textContent as string).trim().replace(/\s+/g, ' ')).toBe('World! Hello Bonus');
   });
 });

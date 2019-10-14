@@ -1,3 +1,4 @@
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular-link-http';
@@ -8,7 +9,6 @@ import { Observable } from 'rxjs';
 import { IApiServiceConfig } from './api.service.config';
 import { createApollo } from './graphql.module';
 import { IExtendMessage, SocketService } from './socket.service';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 export interface IApiParameters {
   [key: string]: string | number | boolean | null;
@@ -30,8 +30,10 @@ export function formatApiParameters(parameters: IApiParametersInput | undefined)
   }).join(', ')})`;
 }
 
-export function formatVariableType(variable: unknown) {
-  console.log(variable);
+export function formatVariableType(name: string, variable: unknown) {
+  if (/Id$/.test(name)) {
+    return 'ID';
+  }
 
   if (variable instanceof File) {
     return 'Upload!';
@@ -42,11 +44,11 @@ export function formatVariableType(variable: unknown) {
   return type.substr(0, 1).toUpperCase() + type.substr(1);
 }
 
-export function formatVariablesString(variables: Record<string, any> | null | undefined) {
+export function formatVariablesString(variables: Record<string, unknown> | null | undefined) {
   const variablesNames = Object.keys(variables || {});
 
   return variablesNames.length ? `(${variablesNames.map(name => {
-    return `$${name}: ${formatVariableType((variables as Record<string, any>)[name])}`;
+    return `$${name}: ${formatVariableType(name, (variables as Record<string, unknown>)[name])}`;
   })})` : '';
 }
 
@@ -62,6 +64,7 @@ export class ApiService {
   }
 
   protected getResponseInterceptor(): ApolloLink {
+    // tslint:disable-next-line:no-any
     return new ApolloLink((op, forward: (op: any) => any) => {
       return forward(op).map((data: object) => {
         const context = op.getContext();
@@ -77,13 +80,18 @@ export class ApiService {
     });
   }
 
+  public getApollo(): Apollo {
+    return this.apollo;
+  }
+
   public config(config: IApiServiceConfig, overrideApolloClient: boolean = true): void {
     if (typeof config.graphql_uri !== 'undefined') {
       const client = this.apollo.getClient();
       const headers = this.headers;
 
       if (!client) {
-        const clientConfig = createApollo(this.httpLink, config.graphql_uri, config.with_credentials !== false, this.getResponseInterceptor(), headers);
+        const withCredentials = config.with_credentials !== false;
+        const clientConfig = createApollo(this.httpLink, config.graphql_uri, withCredentials, this.getResponseInterceptor(), headers);
         this.apollo.setClient(new ApolloClient(clientConfig));
       } else if (overrideApolloClient) {
         client.link = this.getResponseInterceptor().concat(this.httpLink.create({
@@ -134,7 +142,7 @@ export class ApiService {
     parameters?: IApiParametersInput,
     returnedDataFields?: string | string[] | null,
     returnedExtraFields?: string | string[] | null,
-    variables?: Record<string, any> | null,
+    variables?: Record<string, unknown> | null,
   ): Observable<ApolloQueryResult<T>> {
     const parametersString = formatApiParameters(parameters);
 
@@ -152,7 +160,7 @@ export class ApiService {
           ${name}${parametersString} {${returnedDataFields ? `data{${returnedDataFields}}` : ''}${returnedExtraFields || ''}}
         }
       `,
-      variables: variables as Record<string, any>,
+      variables: variables as Record<string, unknown>,
     }).valueChanges;
   }
 
@@ -160,8 +168,8 @@ export class ApiService {
     name: string,
     parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
-    variables?: Record<string, any>,
-    context?: any,
+    variables?: Record<string, unknown>,
+    context?: unknown,
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
     const parametersString = formatApiParameters(parameters);
 
@@ -186,8 +194,8 @@ export class ApiService {
     name: string,
     parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
-    variables?: Record<string, any>,
-    context?: any,
+    variables?: Record<string, unknown>,
+    context?: unknown,
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
     return this.mutate<T>(name, parameters, returnedFields, variables, Object.assign({
       useMultipart: true,

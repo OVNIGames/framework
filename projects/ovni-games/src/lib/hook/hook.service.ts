@@ -50,7 +50,7 @@ export class HookService {
     this.hooks[element][priority][child] = template;
   }
 
-  public getTemplates(element: string, viewContainerRef: ViewContainerRef): TemplateRef<object>[] {
+  public getTemplates(element: string, viewContainerRef?: ViewContainerRef): TemplateRef<object>[] {
     const templates: TemplateRef<object>[] = [];
 
     if (this.hooks[element]) {
