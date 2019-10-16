@@ -12,4 +12,6 @@ export * from './language.interface';
 export * from './ovni-games.module';
 export * from './ovni-games.service';
 export * from './query.interface';
+export * from './pagination.interface';
+export * from './pagination-data-source';
 export * from './socket.service';

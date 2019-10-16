@@ -44,4 +44,9 @@ describe('ApiService', () => {
 
     expect((args.context as Record<string, boolean>).useMultipart).toBe(true);
   });
+
+  it('should handle pagination', () => {
+    const service: ApiService = TestBed.get(ApiService);
+    expect(service.paginate instanceof Function).toBe(true);
+  });
 });

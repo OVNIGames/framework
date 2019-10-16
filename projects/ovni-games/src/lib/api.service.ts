@@ -6,8 +6,11 @@ import ApolloClient, { ApolloQueryResult } from 'apollo-client';
 import { ApolloLink, FetchResult } from 'apollo-link';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IApiServiceConfig } from './api.service.config';
 import { createApollo } from './graphql.module';
+import { PaginationDataSource } from './pagination-data-source';
+import { IPagination } from './pagination.interface';
 import { IExtendMessage, SocketService } from './socket.service';
 
 export interface IApiParameters {
@@ -25,9 +28,11 @@ export function formatApiParameters(parameters: IApiParametersInput | undefined)
     return parameters;
   }
 
-  return `(${Object.keys(parameters).map(key => {
-    return `${key}: ${JSON.stringify(parameters[key])}`;
-  }).join(', ')})`;
+  return `(${Object.keys(parameters)
+    .map(key => {
+      return `${key}: ${JSON.stringify(parameters[key])}`;
+    })
+    .join(', ')})`;
 }
 
 export function formatVariableType(name: string, variable: unknown) {
@@ -47,9 +52,11 @@ export function formatVariableType(name: string, variable: unknown) {
 export function formatVariablesString(variables: Record<string, unknown> | null | undefined) {
   const variablesNames = Object.keys(variables || {});
 
-  return variablesNames.length ? `(${variablesNames.map(name => {
-    return `$${name}: ${formatVariableType(name, (variables as Record<string, unknown>)[name])}`;
-  })})` : '';
+  return variablesNames.length
+    ? `(${variablesNames.map(name => {
+        return `$${name}: ${formatVariableType(name, (variables as Record<string, unknown>)[name])}`;
+      })})`
+    : '';
 }
 
 @Injectable({
@@ -57,11 +64,10 @@ export function formatVariablesString(variables: Record<string, unknown> | null 
 })
 export class ApiService {
   protected assetPrefix = '';
-  protected extendCallbacks: Array<((message: IExtendMessage<object>) => void)> = [];
+  protected extendCallbacks: Array<(message: IExtendMessage<object>) => void> = [];
   protected headers = new HttpHeaders();
 
-  constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {
-  }
+  constructor(private apollo: Apollo, private socket: SocketService, private httpLink: HttpLink) {}
 
   protected getResponseInterceptor(): ApolloLink {
     // tslint:disable-next-line:no-any
@@ -94,11 +100,13 @@ export class ApiService {
         const clientConfig = createApollo(this.httpLink, config.graphql_uri, withCredentials, this.getResponseInterceptor(), headers);
         this.apollo.setClient(new ApolloClient(clientConfig));
       } else if (overrideApolloClient) {
-        client.link = this.getResponseInterceptor().concat(this.httpLink.create({
-          headers,
-          uri: config.graphql_uri,
-          withCredentials: config.with_credentials !== false,
-        }));
+        client.link = this.getResponseInterceptor().concat(
+          this.httpLink.create({
+            headers,
+            uri: config.graphql_uri,
+            withCredentials: config.with_credentials !== false,
+          })
+        );
       }
 
       if (/^(https?:\/\/[^\/]+)(\/.*)?$/.test(config.graphql_uri)) {
@@ -142,7 +150,7 @@ export class ApiService {
     parameters?: IApiParametersInput,
     returnedDataFields?: string | string[] | null,
     returnedExtraFields?: string | string[] | null,
-    variables?: Record<string, unknown> | null,
+    variables?: Record<string, unknown> | null
   ): Observable<ApolloQueryResult<T>> {
     const parametersString = formatApiParameters(parameters);
 
@@ -169,7 +177,7 @@ export class ApiService {
     parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
     variables?: Record<string, unknown>,
-    context?: unknown,
+    context?: unknown
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
     const parametersString = formatApiParameters(parameters);
 
@@ -195,11 +203,20 @@ export class ApiService {
     parameters?: IApiParametersInput,
     returnedFields?: string | string[] | null,
     variables?: Record<string, unknown>,
-    context?: unknown,
+    context?: unknown
   ): Observable<FetchResult<T, Record<string, object>, Record<string, object>>> {
-    return this.mutate<T>(name, parameters, returnedFields, variables, Object.assign({
-      useMultipart: true,
-    }, context));
+    return this.mutate<T>(
+      name,
+      parameters,
+      returnedFields,
+      variables,
+      Object.assign(
+        {
+          useMultipart: true,
+        },
+        context
+      )
+    );
   }
 
   public onExtend<T>(callback: (message: IExtendMessage<T & object>) => void, room?: string): () => void {
@@ -222,5 +239,54 @@ export class ApiService {
 
   public onRoomExtend<T>(room: string, callback: (message: IExtendMessage<T>) => void): () => void {
     return this.onExtend(callback, room);
+  }
+
+  public getPage<T>(query: string, variables: Record<string, unknown>, pageSize = 50, page = 1): Observable<IPagination<T>> {
+    return this.apollo
+      .watchQuery<ApolloQueryResult<Record<string, IPagination<T>>>>({
+        query,
+        variables: Object.assign({}, variables, {
+          page,
+          pageSize,
+        }),
+      })
+      .valueChanges.pipe(
+        map(result => {
+          let data: IPagination<T> = {};
+
+          if (!Object.keys(result.data).some(key => {
+            if (result.data[key].data && typeof result.data[key].total !== 'undefined') {
+              data = result.data[key];
+
+              return true;
+            }
+
+            return false;
+          })) {
+            throw new Error('No {data, total} object found.');
+          }
+
+          return data;
+        })
+      );
+  }
+
+  public paginate<T>(
+    query: string,
+    variables: Record<string, unknown>,
+    initialPageSize = 50,
+    initialPage = 1
+  ): Observable<PaginationDataSource<T>> {
+    return this.getPage<T>(query, variables, initialPageSize, initialPage).pipe(
+      map(
+        initialResult =>
+          new PaginationDataSource<T>(
+            (page, pageSize) => this.getPage<T>(query, variables, pageSize, (page || 0) + 1).pipe(map(result => result.data as T[])),
+            initialResult.total as number,
+            initialPageSize,
+            { [initialPageSize - 1]: initialResult.data as T[] }
+          )
+      )
+    );
   }
 }

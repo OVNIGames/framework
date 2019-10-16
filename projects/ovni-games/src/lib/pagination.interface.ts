@@ -1,6 +1,6 @@
 import { IQuery } from './query.interface';
 
-export interface IPagination<T> extends Partial<IQuery<T>> {
+export interface IPagination<T> extends Partial<IQuery<T[]>> {
   total?: number;
   per_page?: number;
   last_page?: number;
