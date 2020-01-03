@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApolloQueryResult } from 'apollo-client';
 import { FetchResult } from 'apollo-link';
-import { Observable, Observer, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { IRawUser, ITimezone } from '../..';
 import { ApiService, IApiParameters } from '../api.service';
@@ -29,6 +29,15 @@ export class UserService {
       name
     }
   `;
+  protected currentUserSubject = new BehaviorSubject<User | null>(null);
+  protected logoutSubject = new Subject<User>();
+  protected loginSubject = new Subject<{user: User, remember: boolean | undefined}>();
+  protected loginAttemptSubject = new Subject<{email: string, remember: boolean | undefined}>();
+
+  public userChanges = this.currentUserSubject.asObservable();
+  public loggedOut = this.logoutSubject.asObservable();
+  public loggedIn = this.loginSubject.asObservable();
+  public loginAttempted = this.loginAttemptSubject.asObservable();
 
   constructor(private api: ApiService) {
     api.onExtend<IUser>((message: IExtendMessage<IUser>) => {
@@ -60,10 +69,12 @@ export class UserService {
       this.api.leave(this.currentUser.room);
     }
 
-    this.currentUser = null;
+    this.setCurrentUser(null);
   }
 
   public login(email: string, password: string, remember?: boolean): Promise<User | null> {
+    this.loginAttemptSubject.next({email, remember});
+
     return new Promise(resolve => {
       this.api.mutate<ILoginResult>('login', {
         email,
@@ -80,6 +91,7 @@ export class UserService {
           if (user) {
             properties.id = user.id;
           }
+
           this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
             .subscribe((updateResult: ApolloQueryResult<{updateUser: IRawUser}>) => {
               if (updateResult.data.updateUser) {
@@ -88,14 +100,20 @@ export class UserService {
                 });
               }
             });
-          });
+        });
+
         this.registerUser(user, true);
         resolve(user);
+        this.loginSubject.next({user, remember});
       });
     });
   }
 
   public logout(): Observable<FetchResult<{logout: boolean}, Record<string, object>, Record<string, object>>> {
+    if (this.currentUser) {
+      this.logoutSubject.next(this.currentUser);
+    }
+
     this.invalidCurrentUser();
 
     return this.api.mutate('logout');
@@ -105,13 +123,16 @@ export class UserService {
     if (user.email && this.usersByEmail[user.email]) {
       delete this.usersByEmail[user.email];
     }
+
     if (user.id && this.usersByEmail[user.id]) {
       delete this.usersByEmail[user.id];
     }
+
     if (user.room) {
       if (this.usersByRoom[user.room]) {
         delete this.usersByRoom[user.room];
       }
+
       this.api.leave(user.room);
     }
     user.kill();
@@ -119,14 +140,17 @@ export class UserService {
 
   public registerUser(user: User, markAsCurrentUser?: boolean): void {
     if (markAsCurrentUser) {
-      this.currentUser = user;
+      this.setCurrentUser(user);
     }
+
     if (user.email) {
       this.usersByEmail[user.email.toLowerCase()] = user;
     }
+
     if (user.id) {
       this.usersById[(user.id + '').toLowerCase()] = user;
     }
+
     if (user.room) {
       this.usersByRoom[user.room] = user;
       this.api.join(user.room);
@@ -137,18 +161,23 @@ export class UserService {
     if (parameters && parameters.current && this.currentUser) {
       return this.currentUser;
     }
+
     if (parameters && typeof parameters.email === 'string') {
       const email = parameters.email.toLowerCase();
+
       if (this.usersByEmail[email]) {
         return this.usersByEmail[email];
       }
     }
+
     if (parameters && parameters.id) {
       const id = (parameters.id + '').toLowerCase();
+
       if (this.usersById[id]) {
         return this.usersById[id];
       }
     }
+
     if (parameters && (typeof parameters.room === 'string' || typeof parameters.room === 'number') && this.usersByRoom[parameters.room]) {
       return this.usersByRoom[parameters.room];
     }
@@ -158,8 +187,10 @@ export class UserService {
 
   public get(parameters: IApiParameters): Subject<User | null> {
     let user: User;
+
     const observable = new Observable((userSubscription: Observer<User | null>) => {
       const registeredUser = this.getRegisteredUser(parameters);
+
       if (registeredUser) {
         userSubscription.next(registeredUser);
 
@@ -169,8 +200,10 @@ export class UserService {
       this.api.query('users', parameters, this.userDataFields).subscribe((result: ApolloQueryResult<IUsersQuery>) => {
         if (!result.data.users.data[0]) {
           userSubscription.next(null);
+
           return;
         }
+
         user = new User(result.data.users.data[0], userSubscription, (properties: IUser) => {
           if (user) {
             properties.id = user.id;
@@ -185,6 +218,7 @@ export class UserService {
               }
             });
         });
+
         this.registerUser(user, !!parameters.current);
         userSubscription.next(user);
       });
@@ -195,12 +229,14 @@ export class UserService {
         if (user && updateUser) {
           let touched = false;
           const properties = {};
+
           Object.keys(updateUser).forEach(key => {
             if (updateUser[key] !== user[key]) {
               properties[key] = updateUser[key];
               touched = true;
             }
           });
+
           if (touched) {
             user.update(properties);
           }
@@ -247,5 +283,10 @@ export class UserService {
     }
 
     return this.update(id, {timezone});
+  }
+
+  protected setCurrentUser(user: User | null | undefined | false) {
+    this.currentUser = user || null;
+    this.currentUserSubject.next(this.currentUser);
   }
 }
