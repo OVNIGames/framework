@@ -3,7 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { Observable, Observer } from 'rxjs';
 import { IGamesListResult } from '../..';
 import { ApiService } from '../api.service';
-import { IExtendMessage } from '../socket.service';
+import { IExtendMessage } from '../socket/socket.service';
 import { IGame } from './game.interface';
 
 @Injectable({

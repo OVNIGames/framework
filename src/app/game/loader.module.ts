@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GameComponent, GameModule } from '@ovnigames/framework';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
 import { HolowarComponent } from './holowar.component';
 import { CharacterModule } from '../character/character.module';
 import { CharacterComponent } from '../character/character.component';

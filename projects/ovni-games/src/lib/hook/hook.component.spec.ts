@@ -80,7 +80,7 @@ describe('HookComponent', () => {
         },
       })
       .compileComponents();
-    hookService = TestBed.get(HookService);
+    hookService = TestBed.inject(HookService);
   }));
 
   beforeEach(() => {
