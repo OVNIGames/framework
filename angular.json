@@ -31,15 +31,7 @@
                 "node_modules"
               ]
             },
-            "scripts": [],
-            "allowedCommonJsDependencies": [
-              "ngx-socket-io",
-              "socket.io-client",
-              "zen-observable",
-              "socket.io-parser",
-              "debug",
-              "webpack"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -146,15 +138,7 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/ovni-games/tsconfig.lib.json",
-            "project": "projects/ovni-games/ng-package.json",
-            "allowedCommonJsDependencies": [
-              "ngx-socket-io",
-              "socket.io-client",
-              "zen-observable",
-              "socket.io-parser",
-              "debug",
-              "webpack"
-            ]
+            "project": "projects/ovni-games/ng-package.json"
           }
         },
         "test": {
