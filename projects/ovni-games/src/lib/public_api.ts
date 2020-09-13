@@ -12,4 +12,4 @@ export * from './language.interface';
 export * from './query.interface';
 export * from './pagination.interface';
 export * from './pagination-data-source';
-export * from './socket/socket.service';
+export * from './socket/public_api';
