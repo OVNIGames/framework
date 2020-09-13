@@ -1,15 +1,10 @@
 import { Compiler, Component, NgModule, NgModuleFactory, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatSelectModule,
-} from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { GameModule } from '../../../projects/ovni-games/src/lib/game/game.module';
 import { GameCreatorModule } from '../../../projects/ovni-games/src/lib/game-creator/game-creator.module';
@@ -17,6 +12,9 @@ import { GamesListModule } from '../../../projects/ovni-games/src/lib/games-list
 import { LoginModule } from '../../../projects/ovni-games/src/lib/login/login.module';
 import { RegisterModule } from '../../../projects/ovni-games/src/lib/register/register.module';
 import { UserModule } from '../../../projects/ovni-games/src/lib/user/user.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
 
 interface ApiResponse {
   error: string;

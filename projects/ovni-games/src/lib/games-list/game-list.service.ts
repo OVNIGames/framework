@@ -3,7 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { Observable, Observer } from 'rxjs';
 import { ApiService } from '../api.service';
 import { IGame } from '../game/game.interface';
-import { IExtendMessage } from '../socket.service';
+import { IExtendMessage } from '../socket/socket.service';
 
 export interface IGamesList {
   top: IGame[];

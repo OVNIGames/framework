@@ -2,8 +2,8 @@
   <mat-spinner *ngIf="loading" [diameter]="32"></mat-spinner>
   <div *ngIf="!loading">
     <div class="row">
-      <div class="name">{{ user.name }}</div>
-      <button class="inline-button" mat-stroked-button (click)="edit()" *ngIf="!editing && user.id">Edit</button>
+      <div class="name">{{ user && user.name }}</div>
+      <button class="inline-button" mat-stroked-button (click)="edit()" *ngIf="!editing && user && user.id">Edit</button>
       <button class="inline-button" mat-flat-button color="primary" (click)="logout()">Logout</button>
     </div>
     <div *ngIf="editing">

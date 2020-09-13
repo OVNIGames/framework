@@ -9,7 +9,7 @@
       <button *ngFor="let game of list.top" mat-flat-button color="primary" class="play"
               routerLink="/play/{{ game.id }}/{{ game.code }}" routerLinkActive="active-link">
         {{ game.name }}
-        <small i18n>by {{ game.owner.name }}</small>
+        <small *ngIf="game?.owner?.name" i18n>by {{ game.owner.name }}</small>
       </button>
     </mat-card>
     <mat-card *ngIf="!creating">

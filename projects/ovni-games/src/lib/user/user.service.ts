@@ -6,7 +6,7 @@ import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { IRawUser, ITimezone } from '../..';
 import { ApiService, IApiParameters } from '../api.service';
 import { ILoginResult } from '../login/login.service';
-import { IExtendMessage } from '../socket.service';
+import { IExtendMessage } from '../socket/socket.service';
 import { User } from './user';
 import { IUser, IUsersQuery } from './user.interface';
 
@@ -92,9 +92,9 @@ export class UserService {
             properties.id = user.id;
           }
 
-          this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
-            .subscribe((updateResult: ApolloQueryResult<{updateUser: IRawUser}>) => {
-              if (updateResult.data.updateUser) {
+          this.api.mutate<{updateUser: IRawUser}>('updateUser', properties, 'updated_at')
+            .subscribe(updateResult => {
+              if (updateResult?.data?.updateUser) {
                 user.assign({
                   updated_at: updateResult.data.updateUser.updated_at,
                 });
@@ -135,6 +135,7 @@ export class UserService {
 
       this.api.leave(user.room);
     }
+
     user.kill();
   }
 
@@ -209,9 +210,9 @@ export class UserService {
             properties.id = user.id;
           }
 
-          this.api.mutate<{updateUser: IUser}>('updateUser', properties, 'updated_at')
-            .subscribe((updateResult: ApolloQueryResult<{updateUser: IRawUser}>) => {
-              if (updateResult.data.updateUser) {
+          this.api.mutate<{updateUser: IRawUser}>('updateUser', properties, 'updated_at')
+            .subscribe(updateResult => {
+              if (updateResult?.data?.updateUser) {
                 user.assign({
                   updated_at: updateResult.data.updateUser.updated_at,
                 });

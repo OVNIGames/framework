@@ -22,6 +22,9 @@
       "es2017",
       "dom",
       "esnext.asynciterable"
-    ]
+    ],
+    "paths": {
+      "rxjs": ["node_modules/rxjs"]
+    }
   }
 }

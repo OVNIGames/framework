@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular-link-http';
 import ApolloClient, { ApolloQueryResult } from 'apollo-client';
-import { ApolloLink, FetchResult } from 'apollo-link';
+import { ApolloLink, DocumentNode, FetchResult } from 'apollo-link';
 import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { IApiServiceConfig } from './api.service.config';
 import { createApollo } from './graphql.module';
 import { PaginationDataSource } from './pagination-data-source';
 import { IPagination } from './pagination.interface';
-import { IExtendMessage, SocketService } from './socket.service';
+import { IExtendMessage, SocketService } from './socket/socket.service';
 
 export interface IApiParameters {
   [key: string]: string | number | boolean | null;
@@ -113,12 +113,6 @@ export class ApiService {
         this.assetPrefix = RegExp.$1;
       }
     }
-
-    if (typeof config.socket_secure !== 'undefined' || typeof config.socket_uri !== 'undefined') {
-      const socketUri = config.socket_uri || '';
-      const socketSecure = typeof config.socket_secure === 'undefined' ? true : config.socket_secure;
-      this.socket.connect(socketUri, socketSecure);
-    }
   }
 
   public getAssetPrefix(): string {
@@ -126,7 +120,7 @@ export class ApiService {
   }
 
   public getMessages(): Observable<MessageEvent> {
-    return this.socket.getMessages().asObservable();
+    return this.socket.getMessages();
   }
 
   public sendMessage(message: object): void {
@@ -163,11 +157,11 @@ export class ApiService {
     }
 
     return this.apollo.watchQuery<T>({
-      query: gql`
+      query: gql(`
         query q${formatVariablesString(variables)} {
           ${name}${parametersString} {${returnedDataFields ? `data{${returnedDataFields}}` : ''}${returnedExtraFields || ''}}
         }
-      `,
+      `),
       variables: variables as Record<string, unknown>,
     }).valueChanges;
   }
@@ -188,11 +182,11 @@ export class ApiService {
     returnedFields = returnedFields ? `{${returnedFields}}` : '';
 
     return this.apollo.mutate<T>({
-      mutation: gql`
+      mutation: gql(`
         mutation mut${formatVariablesString(variables)} {
           ${name}${parametersString} ${returnedFields}
         }
-      `,
+      `),
       variables,
       context,
     });
@@ -241,7 +235,7 @@ export class ApiService {
     return this.onExtend(callback, room);
   }
 
-  public getPage<T>(query: string, variables: Record<string, unknown>, pageSize = 50, page = 1): Observable<IPagination<T>> {
+  public getPage<T>(query: DocumentNode, variables: Record<string, unknown>, pageSize = 50, page = 1): Observable<IPagination<T>> {
     return this.apollo
       .watchQuery<ApolloQueryResult<Record<string, IPagination<T>>>>({
         query,
@@ -272,7 +266,7 @@ export class ApiService {
   }
 
   public paginate<T>(
-    query: string,
+    query: DocumentNode,
     variables: Record<string, unknown>,
     initialPageSize = 50,
     initialPage = 1
