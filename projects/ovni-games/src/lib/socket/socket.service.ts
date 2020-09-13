@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-// import { Socket } from 'ngx-socket-io';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { WrappedSocket as Socket } from './socket-io.service';
 
 export interface IExtendMessage<T> extends MessageEvent {
   action: 'extend';
@@ -12,22 +12,16 @@ export interface IExtendMessage<T> extends MessageEvent {
   providedIn: 'root',
 })
 export class SocketService {
-  // constructor(private socket: Socket) {}
+  constructor(private socket: Socket) {}
 
   public getMessages(): Observable<MessageEvent> {
-    return of({
-      data: 'fake',
-      lastEventId: '0',
-      origin: 'none',
-    } as MessageEvent);
-    // return this.socket.fromEvent<MessageEvent>('message');
+    return this.socket.fromEvent<MessageEvent>('message');
   }
 
   public sendMessage(message: object): void {
-    console.log(message);
-    // this.socket.emit('message', {
-    //   data: message,
-    // });
+    this.socket.emit('message', {
+      data: message,
+    });
   }
 
   public join(room: string): void {

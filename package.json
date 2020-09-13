@@ -28,8 +28,7 @@
     "push-version": "git push --follow-tags && npm run sync-version && npm run package && npm run publish-current",
     "patch-release": "npm version patch && npm run push-version",
     "minor-release": "npm version minor && npm run push-version",
-    "major-release": "npm version major && npm run push-version",
-    "extract-i18n": "ng xi18n ovni-games --i18n-format xlf --output-path i18n --i18n-locale fr && ng run ovni-games:xliffmerge"
+    "major-release": "npm version major && npm run push-version"
   },
   "dependencies": {
     "@angular/animations": "^10.0.1",
@@ -53,7 +52,7 @@
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
     "matches-selector-polyfill": "^1.0.0",
-    "ngx-socket-io": "^3.2.0",
+    "socket.io-client": "~2.2.0",
     "node-sass": "^4.12.0",
     "rxjs": "^6.5.5",
     "url-polyfill": "^1.1.7",
@@ -71,6 +70,7 @@
     "@types/jasmine": "^3.5.0",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^14.0.14",
+    "@types/socket.io-client": "^1.4.33",
     "codelyzer": "^4.5.0",
     "express": "^4.17.1",
     "express-http-proxy": "^1.5.1",
