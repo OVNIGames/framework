@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { ITimezone, IUser } from '../..';
+import { ApiService } from '../api.service';
 import { findTimezone, getTimezoneName } from '../timezone-selector/find-timezone';
-import { UserService } from './user.service';
+import { ITimezone } from '../timezone-selector/timezone.interface';
 import { User } from './user';
+import { IUser } from './user.interface';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'og-user',
@@ -18,7 +20,7 @@ export class UserComponent implements OnInit, OnChanges {
   @Input() public user: User;
   @Output() protected userLoggedOut: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private api: ApiService) {
   }
 
   public ngOnInit(): void {
@@ -62,10 +64,16 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public save(): void {
-    this.user.update({
+    const properties = {
       firstname: this.firstName,
       lastname: this.lastName,
       timezone: getTimezoneName(this.timezone),
+    };
+    this.user.update(properties);
+    this.api.sendMessage({
+      room: this.user.room,
+      action: 'extend',
+      properties,
     });
     this.user.name = `${this.firstName} ${this.lastName}`;
     this.editing = false;
