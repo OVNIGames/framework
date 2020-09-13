@@ -1,5 +1,5 @@
-import { TemplateRef, ViewChild } from '@angular/core';
+import { TemplateRef } from '@angular/core';
 
 export abstract class HookableComponent {
-  @ViewChild(TemplateRef, {static: false}) public template: TemplateRef<object>;
+  public template: TemplateRef<object>;
 }

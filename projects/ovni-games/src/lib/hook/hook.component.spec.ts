@@ -15,6 +15,7 @@ import { HookableComponent } from './hookable.component';
   `,
 })
 export class BonusComponent extends HookableComponent {
+  @ViewChild(TemplateRef, {static: false}) public template: TemplateRef<object>;
 }
 
 @Component({
