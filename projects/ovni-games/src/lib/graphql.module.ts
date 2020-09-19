@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
-import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
-import { HttpLink, HttpLinkHandler, HttpLinkModule } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpHeaders } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { APOLLO_OPTIONS } from 'apollo-angular';
+import { HttpLink, HttpLinkHandler, HttpLinkModule } from 'apollo-angular-link-http';
+import { ApolloModule } from 'apollo-angular/ApolloModule';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 
 export interface IGraphqlApolloConfig {
