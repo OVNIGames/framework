@@ -1,9 +1,8 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { InMemoryCache } from '@apollo/client/core';
 import { APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLink, HttpLinkHandler, HttpLinkModule } from 'apollo-angular-link-http';
-import { ApolloModule } from 'apollo-angular/ApolloModule';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink, HttpLinkHandler } from 'apollo-angular/http';
 import { ApolloLink } from 'apollo-link';
 
 export interface IGraphqlApolloConfig {
@@ -19,13 +18,13 @@ export function createApollo(httpLink: HttpLink, graphqlUri: string = '/graphql'
   });
 
   return {
-    link: link ? link.concat(client) : client,
+    link: link ? link.concat(client as any) : client,
     cache: new InMemoryCache(),
   };
 }
 
 @NgModule({
-  exports: [ApolloModule, HttpLinkModule],
+  imports: [HttpClientModule],
   providers: [
     {
       provide: APOLLO_OPTIONS,

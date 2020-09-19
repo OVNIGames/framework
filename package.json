@@ -42,6 +42,7 @@
     "@angular/platform-browser": "^10.0.1",
     "@angular/platform-browser-dynamic": "^10.0.1",
     "@angular/router": "^10.0.1",
+    "@apollo/client": "^3.2.0",
     "apollo-angular": "^2.0.4",
     "apollo-angular-link-http": "^1.11.0",
     "apollo-cache-inmemory": "^1.6.6",
@@ -52,9 +53,9 @@
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
     "matches-selector-polyfill": "^1.0.0",
-    "socket.io-client": "~2.2.0",
     "node-sass": "^4.12.0",
     "rxjs": "^6.5.5",
+    "socket.io-client": "~2.2.0",
     "url-polyfill": "^1.1.7",
     "web-animations-js": "^2.3.2",
     "zone.js": "^0.8.29"
