@@ -3,27 +3,74 @@
   <div *ngIf="!loading">
     <div class="row">
       <div class="name">{{ user && user.name }}</div>
-      <button class="inline-button" mat-stroked-button (click)="edit()" *ngIf="!editing && user && user.id">Edit</button>
-      <button class="inline-button" mat-flat-button color="primary" (click)="logout()">Logout</button>
+      <button class="inline-button" mat-stroked-button (click)="edit()" *ngIf="!editing && user && user.id" i18n>Edit</button>
+      <button class="inline-button" mat-flat-button color="primary" (click)="logout()" i18n>Logout</button>
     </div>
     <div *ngIf="editing">
       <div>
         <mat-form-field>
-          <mat-label>First name</mat-label>
+          <mat-label i18n>First name</mat-label>
           <input matInput [(ngModel)]="firstName">
         </mat-form-field>
       </div>
       <div>
         <mat-form-field>
-          <mat-label>Last name</mat-label>
+          <mat-label i18n>Last name</mat-label>
           <input matInput [(ngModel)]="lastName">
         </mat-form-field>
       </div>
       <div>
         <og-timezone-selector [(value)]="timezone" [guessIfNull]="true" label="Timezone" i18n-label></og-timezone-selector>
       </div>
-      <button mat-stroked-button (click)="cancel()">Cancel</button>
-      <button type="submit" mat-flat-button color="primary" (click)="save()">Save</button>
+      <button mat-stroked-button (click)="cancel()" i18n>Cancel</button>
+      <button type="submit" mat-flat-button color="primary" (click)="save()" i18n>Save</button>
     </div>
   </div>
+  <mat-spinner *ngIf="passwordLoading" [diameter]="32"></mat-spinner>
+  <div *ngIf="!passwordLoading">
+    <div class="row">
+      <button class="wide-button" mat-stroked-button (click)="changePassword()" *ngIf="!changingPassword" i18n>Change password</button>
+    </div>
+    <div *ngIf="changingPassword" class="wide-fields">
+      <ng-container [formGroup]="changePasswordForm">
+        <div class="row">
+          <mat-form-field>
+            <mat-label i18n>Enter the current password</mat-label>
+            <input type="password" matInput formControlName="currentPassword" (change)="typingCurrentPassword = true">
+            <mat-error
+              *ngIf="!typingCurrentPassword && changePasswordForm.controls.currentPassword.hasError('required')"
+              i18n
+            >Please enter your current password</mat-error>
+            <mat-error
+              *ngIf="!typingCurrentPassword && changePasswordForm.hasError('incorrect')"
+              i18n
+            >Current password is incorrect</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field>
+            <mat-label i18n>Enter the new password</mat-label>
+            <input type="password" matInput formControlName="newPassword" (change)="typingPassword = true">
+            <mat-error
+              *ngIf="!typingCurrentPassword && changePasswordForm.controls.newPassword.hasError('required')"
+              i18n
+            >Please enter a new password</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field>
+            <mat-label i18n>Enter the new password again</mat-label>
+            <input type="password" matInput formControlName="newPasswordAgain" (change)="typingPassword = true">
+            <mat-error
+              *ngIf="!typingPassword && changePasswordForm.hasError('passwordMismatch') || changePasswordForm.controls.newPasswordAgain.hasError('required')"
+              i18n
+            >Password confirmation must match</mat-error>
+          </mat-form-field>
+        </div>
+        <button mat-stroked-button (click)="cancelPasswordChange()" i18n>Cancel</button>
+        <button type="submit" mat-flat-button color="primary" (click)="savePassword()" i18n>Save</button>
+      </ng-container>
+    </div>
+  </div>
+  <div #passwordModifier style="display: none;" i18n>Password successfully modified.</div>
 </mat-card>
